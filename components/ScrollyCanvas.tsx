@@ -250,10 +250,11 @@ export default function ScrollyCanvas() {
             ? sec.offsetTop + sec.offsetHeight + 2
             : savedScrollY.current + window.innerHeight;
           unlockScroll(pastSection);
-          requestAnimationFrame(() => requestAnimationFrame(() => {
+          // Wait 150ms for programmatic scroll to finish rendering before showing page again
+          setTimeout(() => {
             document.body.style.opacity = '1';
             setTimeout(() => { document.body.style.transition = ''; }, 400);
-          }));
+          }, 150);
         }, 350);
       }
 
@@ -264,10 +265,10 @@ export default function ScrollyCanvas() {
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? Math.max(0, sec.offsetTop - 2) : 0);
-          requestAnimationFrame(() => requestAnimationFrame(() => {
+          setTimeout(() => {
             document.body.style.opacity = '1';
             setTimeout(() => { document.body.style.transition = ''; }, 400);
-          }));
+          }, 150);
         }, 350);
       }
     };
@@ -293,10 +294,10 @@ export default function ScrollyCanvas() {
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? sec.offsetTop + sec.offsetHeight + 2 : savedScrollY.current + window.innerHeight);
-          requestAnimationFrame(() => requestAnimationFrame(() => {
+          setTimeout(() => {
             document.body.style.opacity = '1';
             setTimeout(() => { document.body.style.transition = ''; }, 400);
-          }));
+          }, 150);
         }, 350);
       }
       if (newTarget <= 0) {
@@ -306,10 +307,10 @@ export default function ScrollyCanvas() {
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? Math.max(0, sec.offsetTop - 2) : 0);
-          requestAnimationFrame(() => requestAnimationFrame(() => {
+          setTimeout(() => {
             document.body.style.opacity = '1';
             setTimeout(() => { document.body.style.transition = ''; }, 400);
-          }));
+          }, 150);
         }, 350);
       }
     };
@@ -335,10 +336,10 @@ export default function ScrollyCanvas() {
                 ? sec.offsetTop + sec.offsetHeight + 2
                 : savedScrollY.current + window.innerHeight;
               unlockScroll(pastSection);
-              requestAnimationFrame(() => requestAnimationFrame(() => {
+              setTimeout(() => {
                 document.body.style.opacity = '1';
                 setTimeout(() => { document.body.style.transition = ''; }, 400);
-              }));
+              }, 150);
             }, 350);
           }
         }

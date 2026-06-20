@@ -115,15 +115,15 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
       {/* ── Section title — visible at start, fades as you scroll ─────────── */}
       <motion.div
         style={{ opacity: useTransform(scrollYProgress, [0.0, 0.10], [1, 0]) }}
-        className="absolute top-10 left-1/2 -translate-x-1/2 text-center px-4 w-full"
+        className="absolute top-4 sm:top-10 left-1/2 -translate-x-1/2 text-center px-4 w-full"
       >
-        <p className="text-[10px] font-mono tracking-[0.3em] text-[#00BFFF] uppercase mb-2">
+        <p className="text-[8px] sm:text-[10px] font-mono tracking-[0.3em] text-[#00BFFF] uppercase mb-1 sm:mb-2">
           Scroll to explore
         </p>
-        <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white leading-tight">
+        <h2 className="text-sm sm:text-2xl md:text-3xl font-black text-white leading-tight">
           Skills I Know &amp;{" "}
           <span className="bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] bg-clip-text text-transparent">
-            Where They Fit in the Pipeline
+            Where They Fit
           </span>
         </h2>
       </motion.div>
@@ -189,7 +189,7 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
                     </div>
                     <div>
                       <span
-                        className={`text-[9px] sm:text-[10px] font-mono tracking-widest uppercase ${
+                        className={`text-[9px] sm:text-[10px] font-mono tracking-widest uppercase hidden sm:inline-block ${
                           step.isGold ? "text-[#FFD700]" : "text-[#00FFFF]"
                         }`}
                       >
