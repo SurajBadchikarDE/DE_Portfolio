@@ -1,211 +1,352 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useMotionTemplate,
+} from "framer-motion";
 
 interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
+  x: number; y: number;
+  vx: number; vy: number;
   radius: number;
-  alpha: number;
-  targetAlpha: number;
+  alpha: number; targetAlpha: number;
 }
 
+const SUMMARY_LINES = [
+  "Azure Data Engineer with hands-on experience designing and building scalable ELT and ETL pipelines on cloud-native Azure infrastructure.",
+  "Specialised in Medallion architecture, Change Data Capture, and data quality enforcement across Databricks, Snowflake, and Microsoft Fabric.",
+  "Building batch and streaming pipelines that power analytics platforms and executive Power BI dashboards — committed to data governance across Silver and Gold layers.",
+];
+
 export default function Hero() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef  = useRef<HTMLCanvasElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  // ── Scroll driver ──────────────────────────────────────────────────────────
+  const scrollYProgressRaw = useMotionValue(0);
+  const scrollYProgress = useSpring(scrollYProgressRaw, {
+    stiffness: 85,
+    damping: 25,
+    restDelta: 0.0005,
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const element = sectionRef.current;
+      if (!element) return;
+      const rect = element.getBoundingClientRect();
+      const elementHeight = element.offsetHeight || (6 * window.innerHeight);
+      
+      // Calculate progress (0 to 1) as we scroll through the element.
+      // At start start, rect.top is 0.
+      // At end start, rect.bottom is 0 (which is rect.top = -elementHeight).
+      // So scroll distance is elementHeight.
+      const distance = -rect.top;
+      const progress = Math.max(0, Math.min(1, distance / elementHeight));
+      scrollYProgressRaw.set(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Run initially to set the starting progress
+    handleScroll();
+
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [scrollYProgressRaw]);
+
+  // ── Step 1 — immediately visible; exit is scroll-driven ─────────────────
+  const s1Opacity = useTransform(scrollYProgress, [0.0, 0.10, 0.15], [1, 1, 0]);
+  const s1Y       = useTransform(scrollYProgress, [0.10, 0.15], [0, -24]);
+  const s1BlurV   = useTransform(scrollYProgress, [0.10, 0.15], [0, 8]);
+  const s1Filter  = useMotionTemplate`blur(${s1BlurV}px)`;
+
+  // ── Step 2 — Name ──────────────────────────────────────────────────────────
+  const s2NameOpacity = useTransform(scrollYProgress, [0.15, 0.20, 0.30, 0.35], [0, 1, 1, 0]);
+  const s2NameY       = useTransform(scrollYProgress, [0.15, 0.20, 0.30, 0.35], [40, 0, 0, -24]);
+  const s2NameBlurV   = useTransform(scrollYProgress, [0.30, 0.35], [0, 8]);
+  const s2NameFilter  = useMotionTemplate`blur(${s2NameBlurV}px)`;
+
+  // ── Step 2 — Title ─────────────────────────────────────────────────────────
+  const s2TitleOpacity = useTransform(scrollYProgress, [0.17, 0.22, 0.30, 0.35], [0, 1, 1, 0]);
+  const s2TitleY       = useTransform(scrollYProgress, [0.17, 0.22, 0.30, 0.35], [40, 0, 0, -24]);
+  const s2TitleBlurV   = useTransform(scrollYProgress, [0.30, 0.35], [0, 8]);
+  const s2TitleFilter  = useMotionTemplate`blur(${s2TitleBlurV}px)`;
+
+  // ── Step 3 — "I work as an" (connector, fades early) ──────────────────────
+  const s3C1Opacity = useTransform(scrollYProgress, [0.35, 0.40, 0.52, 0.57], [0, 1, 1, 0]);
+
+  // ── Step 3 — "Associate Software Engineer" (stays longer) ─────────────────
+  const s3RoleOpacity = useTransform(scrollYProgress, [0.38, 0.43, 0.56, 0.60], [0, 1, 1, 0]);
+  const s3RoleY       = useTransform(scrollYProgress, [0.38, 0.43], [28, 0]);
+  const s3RoleBlurV   = useTransform(scrollYProgress, [0.56, 0.60], [0, 8]);
+  const s3RoleFilter  = useMotionTemplate`blur(${s3RoleBlurV}px)`;
+
+  // ── Step 3 — "at" (connector, fades early) ────────────────────────────────
+  const s3C2Opacity = useTransform(scrollYProgress, [0.42, 0.47, 0.52, 0.57], [0, 1, 1, 0]);
+
+  // ── Step 3 — "Bizmetric" (stays longer) ───────────────────────────────────
+  const s3CompOpacity = useTransform(scrollYProgress, [0.45, 0.50, 0.56, 0.60], [0, 1, 1, 0]);
+  const s3CompY       = useTransform(scrollYProgress, [0.45, 0.50], [28, 0]);
+  const s3CompBlurV   = useTransform(scrollYProgress, [0.56, 0.60], [0, 8]);
+  const s3CompFilter  = useMotionTemplate`blur(${s3CompBlurV}px)`;
+
+  // ── Step 4 — What I Do ────────────────────────────────────────────────────
+  const s4Opacity = useTransform(scrollYProgress, [0.60, 0.65, 0.72, 0.76], [0, 1, 1, 0]);
+  const s4Y       = useTransform(scrollYProgress, [0.60, 0.65, 0.72, 0.76], [40, 0, 0, -24]);
+  const s4BlurV   = useTransform(scrollYProgress, [0.72, 0.76], [0, 8]);
+  const s4Filter  = useMotionTemplate`blur(${s4BlurV}px)`;
+
+  // ── Step 5 — Summary lines ────────────────────────────────────────────────
+  const s5L1Opacity = useTransform(scrollYProgress, [0.76, 0.79], [0, 1]);
+  const s5L1Y       = useTransform(scrollYProgress, [0.76, 0.79], [20, 0]);
+  const s5L2Opacity = useTransform(scrollYProgress, [0.78, 0.81], [0, 1]);
+  const s5L2Y       = useTransform(scrollYProgress, [0.78, 0.81], [20, 0]);
+  const s5L3Opacity = useTransform(scrollYProgress, [0.80, 0.83], [0, 1]);
+  const s5L3Y       = useTransform(scrollYProgress, [0.80, 0.83], [20, 0]);
+
+  // ── Particle canvas ────────────────────────────────────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    let animationId: number;
+    let animId: number;
     let particles: Particle[] = [];
-    const particleCount = 45;
 
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
+    const resize = () => {
+      canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
-      initParticles();
+      particles = Array.from({ length: 35 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        radius: Math.random() * 1.5 + 0.6,
+        alpha: Math.random() * 0.35 + 0.08,
+        targetAlpha: Math.random() * 0.35 + 0.08,
+      }));
     };
 
-    const initParticles = () => {
-      particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
-          radius: Math.random() * 2 + 1,
-          alpha: Math.random() * 0.4 + 0.1,
-          targetAlpha: Math.random() * 0.4 + 0.1,
-        });
-      }
-    };
-
-    const drawParticles = () => {
+    const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw connection lines if particles are close
-      ctx.lineWidth = 0.5;
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-
-        // Update position
-        p1.x += p1.vx;
-        p1.y += p1.vy;
-
-        // Wrap around screen boundaries
-        if (p1.x < 0) p1.x = canvas.width;
-        if (p1.x > canvas.width) p1.x = 0;
-        if (p1.y < 0) p1.y = canvas.height;
-        if (p1.y > canvas.height) p1.y = 0;
-
-        // Dynamic alpha pulsing
-        if (Math.random() < 0.01) {
-          p1.targetAlpha = Math.random() * 0.4 + 0.1;
-        }
-        p1.alpha += (p1.targetAlpha - p1.alpha) * 0.05;
-
-        // Draw particle
+      particles.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        if (Math.random() < 0.008) p.targetAlpha = Math.random() * 0.35 + 0.08;
+        p.alpha += (p.targetAlpha - p.alpha) * 0.04;
         ctx.beginPath();
-        ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 191, 255, ${p1.alpha})`; // #00BFFF
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,191,255,${p.alpha})`;
         ctx.fill();
-
-        // Connect lines between close particles
         for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (dist < 150) {
-            const lineAlpha = (1 - dist / 150) * 0.08;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(139, 92, 246, ${lineAlpha})`; // #8B5CF6
-            ctx.stroke();
+          const q = particles[j];
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 130) {
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(139,92,246,${(1 - d / 130) * 0.06})`;
+            ctx.lineWidth = 0.4; ctx.stroke();
           }
         }
-
-        // Connect to mouse if close
-        const distToMouse = Math.hypot(p1.x - mousePos.x, p1.y - mousePos.y);
-        if (distToMouse < 200) {
-          const mouseLineAlpha = (1 - distToMouse / 200) * 0.15;
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(mousePos.x, mousePos.y);
-          ctx.strokeStyle = `rgba(0, 255, 255, ${mouseLineAlpha})`; // #00FFFF
-          ctx.stroke();
+        const dm = Math.hypot(p.x - mousePos.x, p.y - mousePos.y);
+        if (dm < 160) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mousePos.x, mousePos.y);
+          ctx.strokeStyle = `rgba(0,255,255,${(1 - dm / 160) * 0.12})`;
+          ctx.lineWidth = 0.4; ctx.stroke();
         }
-      }
-
-      animationId = requestAnimationFrame(drawParticles);
+      });
+      animId = requestAnimationFrame(draw);
     };
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-    drawParticles();
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      cancelAnimationFrame(animationId);
-    };
+    window.addEventListener("resize", resize);
+    resize(); draw();
+    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animId); };
   }, [mousePos]);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    const h = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", h);
+    return () => window.removeEventListener("mousemove", h);
   }, []);
 
-  const handleScrollToPipeline = () => {
-    const section = document.getElementById("pipeline-section");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <section className="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#050816] px-4 select-none">
-      {/* Background Radial Glow System */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Deep Sky Blue Glow (Primary) */}
-        <div className="absolute top-[20%] left-[15%] w-[45vw] h-[45vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.08)_0%,rgba(0,0,0,0)_70%)] blur-3xl animate-pulse-slow" />
-        {/* Teal Glow (Secondary) */}
-        <div className="absolute bottom-[20%] right-[10%] w-[50vw] h-[50vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.06)_0%,rgba(0,0,0,0)_70%)] blur-3xl" />
-        {/* Purple Glow (Accent) */}
-        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[35vw] h-[35vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.07)_0%,rgba(0,0,0,0)_60%)] blur-3xl animate-spin-slow" />
-      </div>
+    /* Scroll track — 600vh gives 5 "pages" of storytelling */
+    <div ref={sectionRef} style={{ height: "600vh" }} className="relative">
 
-      {/* Particle Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full z-1 pointer-events-none"
-      />
+      {/* Sticky viewport-height stage */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#050816]">
 
-      {/* Content Layer */}
-      <div className="relative z-10 text-center max-w-4xl flex flex-col items-center gap-6">
+        {/* Ambient glows */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-[15%] left-[10%] w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.06)_0%,transparent_70%)] blur-3xl animate-pulse-slow" />
+          <div className="absolute bottom-[10%] right-[5%] w-[50vw] h-[50vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.04)_0%,transparent_70%)] blur-3xl" />
+          <div className="absolute top-[50%] left-[55%] -translate-x-1/2 -translate-y-1/2 w-[35vw] h-[35vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.05)_0%,transparent_60%)] blur-3xl animate-spin-slow" />
+        </div>
+
+        {/* Particle canvas */}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-[1] pointer-events-none" />
+
+        {/* ────────────────────────────────────────────────────────────────── */}
+        {/* STEP 1 — Hi there, I'm Suraj. (visible on load, exits on scroll) */}
+        {/* ────────────────────────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center"
+          style={{ opacity: s1Opacity, y: s1Y, filter: s1Filter }}
+          className="absolute inset-0 z-10 flex items-center justify-center px-6"
         >
-          {/* Accent Badge */}
-          <span className="px-3 py-1 text-xs tracking-[0.2em] font-semibold text-[#00BFFF] uppercase bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-md">
-            Medallion Architecture Portfolio
-          </span>
-
-          {/* Large Luxurious Name */}
-          <h1 className="text-5xl md:text-8xl font-black tracking-tight text-white mb-2 select-text selection:bg-[#00BFFF]/20">
-            SURAJ BADCHIKAR
-          </h1>
-
-          {/* Glowing Gradient Subtitle */}
-          <h2 className="text-2xl md:text-4xl font-light tracking-wide bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] bg-clip-text text-transparent mb-6 select-text selection:bg-[#00FFFF]/20">
-            Azure Data Engineer
-          </h2>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-base md:text-xl text-slate-400 font-light max-w-xl leading-relaxed select-text selection:bg-[#8B5CF6]/20"
-        >
-          Hands-on experience designing scalable ELT &amp; ETL pipelines on cloud-native Azure infrastructure — specialised in Medallion architecture, Change Data Capture, data quality enforcement, and batch &amp; streaming pipelines powering analytics platforms and Power BI dashboards.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8"
-        >
-          <button
-            onClick={handleScrollToPipeline}
-            className="group relative px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-white/10 hover:border-[#00BFFF] hover:shadow-[0_0_20px_rgba(0,191,255,0.4)] flex items-center gap-3 overflow-hidden cursor-pointer"
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl sm:text-6xl md:text-7xl font-extralight text-white text-center tracking-tight leading-tight"
           >
-            {/* Shimmer effect */}
-            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            Explore The Pipeline
-            <ArrowDown className="w-4 h-4 text-[#00BFFF] group-hover:translate-y-1 transition-transform" />
-          </button>
+            Hi there, I&apos;m{" "}
+            <span className="font-black">Suraj.</span>
+          </motion.p>
         </motion.div>
-      </div>
 
-      {/* Decorative Side Grid Lines */}
-      <div className="absolute left-[8%] top-0 bottom-0 w-[1px] bg-white/[0.02] hidden md:block" />
-      <div className="absolute right-[8%] top-0 bottom-0 w-[1px] bg-white/[0.02] hidden md:block" />
-    </section>
+        {/* ────────────────────────────────────────────────────────────────── */}
+        {/* STEP 2 — Suraj Badchikar + Data Engineer */}
+        {/* ────────────────────────────────────────────────────────────────── */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6">
+          <motion.h1
+            style={{ opacity: s2NameOpacity, y: s2NameY, filter: s2NameFilter }}
+            className="text-5xl sm:text-7xl md:text-[5.5rem] lg:text-[7rem] font-black tracking-tight text-white text-center leading-none select-text"
+          >
+            Suraj Badchikar
+          </motion.h1>
+          <motion.div
+            style={{ opacity: s2TitleOpacity, y: s2TitleY, filter: s2TitleFilter }}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="h-[1px] w-16 bg-gradient-to-r from-[#00BFFF] to-[#8B5CF6]" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-[0.12em] bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] bg-clip-text text-transparent text-center uppercase">
+              Data Engineer
+            </h2>
+          </motion.div>
+        </div>
+
+        {/* ────────────────────────────────────────────────────────────────── */}
+        {/* STEP 3 — Role reveal: connector text fades, main text stays */}
+        {/* ────────────────────────────────────────────────────────────────── */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center">
+          {/* "I work as an" */}
+          <motion.p
+            style={{ opacity: s3C1Opacity }}
+            className="text-slate-400 text-base sm:text-lg font-light tracking-widest uppercase"
+          >
+            I work as an
+          </motion.p>
+
+          {/* "Associate Software Engineer" */}
+          <motion.h2
+            style={{ opacity: s3RoleOpacity, y: s3RoleY, filter: s3RoleFilter }}
+            className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight"
+          >
+            Associate Software Engineer
+          </motion.h2>
+
+          {/* "at" */}
+          <motion.p
+            style={{ opacity: s3C2Opacity }}
+            className="text-slate-400 text-base sm:text-lg font-light tracking-widest uppercase"
+          >
+            at
+          </motion.p>
+
+          {/* "Bizmetric" */}
+          <motion.h2
+            style={{ opacity: s3CompOpacity, y: s3CompY, filter: s3CompFilter }}
+            className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight bg-gradient-to-r from-[#00BFFF] to-[#8B5CF6] bg-clip-text text-transparent"
+          >
+            Bizmetric
+          </motion.h2>
+        </div>
+
+        {/* ────────────────────────────────────────────────────────────────── */}
+        {/* STEP 4 — What I Do */}
+        {/* ────────────────────────────────────────────────────────────────── */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center">
+          <motion.p
+            style={{ opacity: s4Opacity }}
+            className="text-slate-400 text-base sm:text-lg font-light tracking-widest uppercase"
+          >
+            What I do
+          </motion.p>
+          <motion.h2
+            style={{ opacity: s4Opacity, y: s4Y, filter: s4Filter }}
+            className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight"
+          >
+            Build Scalable Data Solutions
+          </motion.h2>
+          <motion.p
+            style={{ opacity: s4Opacity, filter: s4Filter }}
+            className="text-slate-400 text-sm sm:text-base md:text-lg font-light max-w-xl mx-auto leading-relaxed mt-2"
+          >
+            Designing and optimizing robust ETL/ELT pipelines that turn raw data streams into analytics-ready models.
+          </motion.p>
+        </div>
+
+        {/* ────────────────────────────────────────────────────────────────── */}
+        {/* STEP 5 — Professional summary */}
+        {/* ────────────────────────────────────────────────────────────────── */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 md:px-20">
+          <div className="max-w-2xl w-full flex flex-col gap-6">
+            {/* Eyebrow */}
+            <motion.div
+              style={{ opacity: s5L1Opacity }}
+              className="flex items-center gap-3"
+            >
+              <div className="w-5 h-[1.5px] bg-[#00BFFF] shrink-0" />
+              <span className="text-[10px] font-mono tracking-[0.3em] text-[#00BFFF] uppercase">
+                Professional Summary
+              </span>
+            </motion.div>
+
+            {/* Line 1 */}
+            <motion.p
+              style={{ opacity: s5L1Opacity, y: s5L1Y }}
+              className="text-white text-base sm:text-lg md:text-xl font-light leading-relaxed"
+            >
+              {SUMMARY_LINES[0]}
+            </motion.p>
+
+            {/* Line 2 */}
+            <motion.p
+              style={{ opacity: s5L2Opacity, y: s5L2Y }}
+              className="text-slate-300 text-sm sm:text-base md:text-lg font-light leading-relaxed"
+            >
+              {SUMMARY_LINES[1]}
+            </motion.p>
+
+            {/* Line 3 */}
+            <motion.p
+              style={{ opacity: s5L3Opacity, y: s5L3Y }}
+              className="text-slate-400 text-sm sm:text-base font-light leading-relaxed"
+            >
+              {SUMMARY_LINES[2]}
+            </motion.p>
+          </div>
+        </div>
+
+        {/* Grid lines */}
+        <div className="absolute left-[5%]  top-0 bottom-0 w-[1px] bg-white/[0.02] hidden lg:block pointer-events-none z-0" />
+        <div className="absolute right-[5%] top-0 bottom-0 w-[1px] bg-white/[0.02] hidden lg:block pointer-events-none z-0" />
+
+        {/* Blink keyframe via inline style */}
+        <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
+      </div>
+    </div>
   );
 }

@@ -28,18 +28,24 @@ export default function ScrollyCanvas() {
 
   const scrollProgress = useMotionValue(0);
 
-  // ── Preload frames ────────────────────────────────────────────────────────
+  // ── Preload frames (max 2 s wait) ────────────────────────────────
   useEffect(() => {
     let loaded = 0;
     const imgs: HTMLImageElement[] = new Array(TOTAL_FRAMES);
 
     const statusMsg = (p: number) => {
-      if (p < 25) setLoaderStatus("Ingesting raw data streams...");
+      if (p < 25)      setLoaderStatus("Ingesting raw data streams...");
       else if (p < 50) setLoaderStatus("Compiling bronze medallion tables...");
       else if (p < 75) setLoaderStatus("Optimizing Spark execution plans...");
       else if (p < 95) setLoaderStatus("Enforcing Unity Catalog governance...");
-      else setLoaderStatus("Ready to stream analytics.");
+      else             setLoaderStatus("Ready to stream analytics.");
     };
+
+    // Hard cap: show whatever frames we have after 2 seconds
+    const maxTimer = setTimeout(() => {
+      imagesRef.current = imgs;
+      setIsLoading(false);
+    }, 2000);
 
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new Image();
@@ -51,11 +57,14 @@ export default function ScrollyCanvas() {
         setLoadProgress(pct);
         statusMsg(pct);
         if (loaded === TOTAL_FRAMES) {
+          clearTimeout(maxTimer);
           imagesRef.current = imgs;
-          setTimeout(() => setIsLoading(false), 400);
+          setTimeout(() => setIsLoading(false), 200);
         }
       };
     }
+
+    return () => clearTimeout(maxTimer);
   }, []);
 
   // ── Sharp canvas draw (devicePixelRatio-aware) ────────────────────────────
@@ -212,21 +221,34 @@ export default function ScrollyCanvas() {
 
       if (newTarget >= 1) {
         isCompletedRef.current = true;
+        // Fade page out → scroll → fade back in (hides programmatic scroll jump)
+        document.body.style.transition = 'opacity 0.35s ease';
+        document.body.style.opacity   = '0';
         setTimeout(() => {
           const sec = sectionRef.current;
           const pastSection = sec
             ? sec.offsetTop + sec.offsetHeight + 2
             : savedScrollY.current + window.innerHeight;
           unlockScroll(pastSection);
-        }, 120);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.body.style.opacity = '1';
+            setTimeout(() => { document.body.style.transition = ''; }, 400);
+          }));
+        }, 350);
       }
 
       if (newTarget <= 0) {
         isCompletedRef.current = false;
+        document.body.style.transition = 'opacity 0.35s ease';
+        document.body.style.opacity   = '0';
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? Math.max(0, sec.offsetTop - 2) : 0);
-        }, 120);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.body.style.opacity = '1';
+            setTimeout(() => { document.body.style.transition = ''; }, 400);
+          }));
+        }, 350);
       }
     };
 
@@ -245,17 +267,29 @@ export default function ScrollyCanvas() {
       startAnimLoop();
       if (newTarget >= 1) {
         isCompletedRef.current = true;
+        document.body.style.transition = 'opacity 0.35s ease';
+        document.body.style.opacity   = '0';
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? sec.offsetTop + sec.offsetHeight + 2 : savedScrollY.current + window.innerHeight);
-        }, 120);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.body.style.opacity = '1';
+            setTimeout(() => { document.body.style.transition = ''; }, 400);
+          }));
+        }, 350);
       }
       if (newTarget <= 0) {
         isCompletedRef.current = false;
+        document.body.style.transition = 'opacity 0.35s ease';
+        document.body.style.opacity   = '0';
         setTimeout(() => {
           const sec = sectionRef.current;
           unlockScroll(sec ? Math.max(0, sec.offsetTop - 2) : 0);
-        }, 120);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.body.style.opacity = '1';
+            setTimeout(() => { document.body.style.transition = ''; }, 400);
+          }));
+        }, 350);
       }
     };
 

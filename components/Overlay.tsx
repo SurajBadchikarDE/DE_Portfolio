@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, MotionValue, useTransform } from "framer-motion";
-import { Database, Download, Cpu, ShieldCheck, BarChart4, Award } from "lucide-react";
+import { Database, Download, Cpu, ShieldCheck, BarChart4, Wrench } from "lucide-react";
 
 interface OverlayProps {
   scrollYProgress: MotionValue<number>;
@@ -20,51 +20,90 @@ interface PipelineStep {
 export default function Overlay({ scrollYProgress }: OverlayProps) {
   const steps: PipelineStep[] = [
     {
-      title: "Raw Data",
-      subtitle: "Medallion Pipeline: Entrypoint",
-      description: "Every insight begins as unstructured or semi-structured information flowing through modern cloud enterprise systems.",
-      chips: ["SQL Server", "CSV / JSON", "Rest API", "IoT Streams"],
+      title: "Raw Data Sources",
+      subtitle: "Ingestion — Where data is born",
+      description:
+        "Raw, unstructured data flows in from operational systems, files, APIs, and event streams. Tools and languages used to connect, query, and pull data from source systems.",
+      chips: [
+        "Python", "SQL", "Pandas",
+        "Azure SQL", "SQL Server", "PostgreSQL",
+        "CSV / JSON / Parquet", "REST APIs",
+        "SSMS", "DBeaver",
+      ],
       icon: Database,
       ranges: [0.0, 0.05, 0.10, 0.14],
     },
     {
-      title: "Ingestion",
-      subtitle: "Bronze Layer: Ingest",
-      description: "Building resilient ingestion pipelines with massive throughput using Azure Data Factory, Event Hubs, and Azure Functions.",
-      chips: ["ADF", "Event Hubs", "Azure Functions", "Autoloader"],
+      title: "Ingestion & Streaming",
+      subtitle: "Bronze Layer — Ingest at scale",
+      description:
+        "Building resilient batch and real-time ingestion pipelines. Change Data Capture, event-driven ingest, and serverless triggers bring data into the lakehouse reliably.",
+      chips: [
+        "Azure Data Factory", "Azure Event Hubs",
+        "Azure Functions", "Debezium (CDC)",
+        "ADLS Gen2", "Autoloader",
+        "ELT / ETL", "Batch Pipelines", "Streaming Pipelines",
+      ],
       icon: Download,
       ranges: [0.15, 0.20, 0.26, 0.30],
     },
     {
       title: "Transformation",
-      subtitle: "Silver Layer: Cleanse & Enrich",
-      description: "Cleaning, refining, and transforming bronze data using Databricks cluster nodes, PySpark computations, and Delta Lake formats.",
-      chips: ["Databricks", "PySpark", "Spark SQL", "Delta Lake"],
+      subtitle: "Silver Layer — Cleanse & Enrich",
+      description:
+        "Heavy distributed computation — cleaning, joining, aggregating, and conforming bronze data into enriched Silver tables using cluster-scale engines and lakehouse formats.",
+      chips: [
+        "PySpark", "SparkSQL", "Databricks",
+        "Delta Lake", "Microsoft Fabric",
+        "Data Modeling", "Star Schema",
+        "Schema Evolution", "Incremental Loading",
+        "Data Quality Checks",
+      ],
       icon: Cpu,
       ranges: [0.31, 0.36, 0.42, 0.46],
     },
     {
-      title: "Governance",
-      subtitle: "Security & Cataloging",
-      description: "Ensuring compliance and data trust through schema evolution, quality checks, lineage, and centralized Unity Catalog policies.",
-      chips: ["Unity Catalog", "CDC (Debezium)", "Great Expectations", "Lineage"],
+      title: "Governance & Quality",
+      subtitle: "Compliance · Lineage · Trust",
+      description:
+        "Enforcing data contracts, lineage tracking, access controls, and automated monitoring to ensure Gold-layer data is trustworthy, compliant, and audit-ready.",
+      chips: [
+        "Unity Catalog", "Data Governance",
+        "Data Lineage", "Data Quality",
+        "Change Data Capture", "SLA Monitoring",
+        "Azure Monitor", "CI/CD Pipelines",
+        "Azure DevOps", "Git / GitHub",
+      ],
       icon: ShieldCheck,
       ranges: [0.47, 0.52, 0.58, 0.62],
     },
     {
-      title: "Business Ready",
-      subtitle: "Gold Layer: Curate & Serve",
-      description: "Serving aggregate datasets powering enterprise reporting, Snowflake data warehouse tables, and real-time Power BI dashboards.",
-      chips: ["Power BI", "Microsoft Fabric", "Snowflake", "dbt"],
+      title: "Business Ready — Gold",
+      subtitle: "Serve · Report · Analyse",
+      description:
+        "Curated, aggregated Gold tables power executive dashboards, analyst queries, and machine learning feature stores. Analytics at the speed of business decisions.",
+      chips: [
+        "Power BI", "Snowflake",
+        "Microsoft Fabric", "Azure SQL",
+        "Data Lakehouse", "Executive Dashboards",
+        "dbt", "DirectLake",
+      ],
       icon: BarChart4,
       ranges: [0.63, 0.68, 0.74, 0.78],
     },
     {
-      title: "Data That Creates Value",
-      subtitle: "Strategic Analytics",
-      description: "Transforming raw numbers into automated strategic decision vectors that drive revenue, efficiency, and business growth.",
-      chips: ["Executive Dashboards", "ML Predictions", "Data Products"],
-      icon: Award,
+      title: "DevOps & Tooling",
+      subtitle: "Infrastructure · Automation · Reliability",
+      description:
+        "End-to-end automation, monitoring, and release engineering ensure pipelines run reliably in production. Infrastructure-as-code and observability complete the data platform.",
+      chips: [
+        "Azure DevOps", "CI/CD Pipelines",
+        "Git", "GitHub",
+        "Azure Monitor", "Azure Functions",
+        "Microsoft Excel", "SSMS", "DBeaver",
+        "Medallion Architecture",
+      ],
+      icon: Wrench,
       ranges: [0.79, 0.83, 1.0, 1.0],
       isGold: true,
     },
@@ -72,16 +111,31 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
 
   return (
     <div className="absolute inset-0 z-30 pointer-events-none w-full h-full">
-      {/* Scroll Indicator */}
-      <motion.div 
-        style={{
-          opacity: useTransform(scrollYProgress, [0.0, 0.12], [1, 0])
-        }}
+
+      {/* ── Section title — visible at start, fades as you scroll ─────────── */}
+      <motion.div
+        style={{ opacity: useTransform(scrollYProgress, [0.0, 0.10], [1, 0]) }}
+        className="absolute top-10 left-1/2 -translate-x-1/2 text-center px-4 w-full"
+      >
+        <p className="text-[10px] font-mono tracking-[0.3em] text-[#00BFFF] uppercase mb-2">
+          Scroll to explore
+        </p>
+        <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white leading-tight">
+          Skills I Know &amp;{" "}
+          <span className="bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] bg-clip-text text-transparent">
+            Where They Fit in the Pipeline
+          </span>
+        </h2>
+      </motion.div>
+
+      {/* ── Scroll indicator ───────────────────────────────────────────────── */}
+      <motion.div
+        style={{ opacity: useTransform(scrollYProgress, [0.0, 0.12], [1, 0]) }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-xs uppercase tracking-[0.25em] text-slate-400 font-mono">Scroll to process data</span>
+        <span className="text-xs uppercase tracking-[0.25em] text-slate-400 font-mono">Scroll through pipeline</span>
         <div className="w-[1.5px] h-10 bg-white/10 rounded-full overflow-hidden">
-          <motion.div 
+          <motion.div
             animate={{ y: ["-100%", "100%"] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
             className="w-full h-1/2 bg-gradient-to-b from-[#00BFFF] to-[#00FFFF]"
@@ -89,25 +143,17 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
         </div>
       </motion.div>
 
-      {/* Steps Rendering */}
-      <div className="relative w-full h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
+      {/* ── Pipeline step cards ────────────────────────────────────────────── */}
+      <div className="relative w-full h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center -translate-y-12">
         <div className="max-w-lg w-full">
           {steps.map((step, index) => {
-            // Map values for scroll transforms
-            const fadeInStart = step.ranges[0];
-            const fadeInEnd = step.ranges[1];
-            const fadeOutStart = step.ranges[2];
-            const fadeOutEnd = step.ranges[3];
-
-            // If it is the last step, it shouldn't fade out
+            const [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd] = step.ranges;
             const opacityMap = [0, 1, 1, step.isGold ? 1 : 0];
             const opacity = useTransform(
               scrollYProgress,
               [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
               opacityMap
             );
-
-            // Parallax shift
             const yMap = [60, 0, 0, step.isGold ? 0 : -60];
             const y = useTransform(
               scrollYProgress,
@@ -126,14 +172,14 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
                 <div
                   className={`glass-card p-6 md:p-8 rounded-2xl border ${
                     step.isGold
-                      ? "border-[#FFD700]/30 shadow-[0_0_40px_rgba(255,215,0,0.15)] bg-[#FFD700]/[0.02]"
+                      ? "border-[#FFD700]/30 shadow-[0_0_40px_rgba(255,215,0,0.12)] bg-[#FFD700]/[0.02]"
                       : "border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.4)]"
                   } flex flex-col gap-4 max-w-md backdrop-blur-xl`}
                 >
-                  {/* Step Header */}
+                  {/* Header */}
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
                         step.isGold
                           ? "bg-[#FFD700]/10 text-[#FFD700]"
                           : "bg-[#00BFFF]/10 text-[#00BFFF]"
@@ -159,21 +205,21 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
                     </div>
                   </div>
 
-                  {/* Step Description */}
-                  <p className="text-slate-300 text-sm md:text-base font-light leading-relaxed">
+                  {/* Description */}
+                  <p className="text-slate-300 text-sm font-light leading-relaxed">
                     {step.description}
                   </p>
 
-                  {/* Technology Chips */}
-                  <div className="flex flex-wrap gap-2 pt-2">
+                  {/* Skill chips */}
+                  <div className="flex flex-wrap gap-2 pt-2 border-t border-white/[0.06]">
                     {step.chips.map((chip, cIdx) => (
                       <span
                         key={cIdx}
-                        className={`px-3 py-1 rounded-md text-[11px] font-mono border ${
+                        className={`px-3 py-1 rounded-md text-[11px] font-mono border transition-colors ${
                           step.isGold
                             ? "bg-[#FFD700]/5 border-[#FFD700]/25 text-[#FFD700]"
                             : "bg-white/5 border-white/10 text-slate-300 hover:border-[#00BFFF] hover:text-white"
-                        } transition-colors`}
+                        }`}
                       >
                         {chip}
                       </span>
@@ -186,10 +232,10 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
         </div>
       </div>
 
-      {/* Decorative pipeline flow status display */}
+      {/* Status indicator */}
       <div className="absolute top-8 right-6 md:right-12 pointer-events-auto bg-[#050816]/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 flex items-center gap-3 select-none text-xs font-mono text-slate-400">
         <div className="w-2 h-2 rounded-full bg-[#00BFFF] animate-ping" />
-        <span>STREAMING SYSTEM METRIC FEED</span>
+        <span>PIPELINE SKILL MAP</span>
       </div>
     </div>
   );

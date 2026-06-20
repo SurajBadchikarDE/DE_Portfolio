@@ -33,14 +33,14 @@ export default function Home() {
       {/* Technical Infrastructure Showcase */}
       <TechStack />
 
-      {/* Bento Grid Projects Grid */}
-      <Projects />
-
       {/* Certifications Showroom */}
       <Certifications />
 
       {/* Career Trajectory Path Line */}
       <Timeline />
+
+      {/* Bento Grid Projects Grid */}
+      <Projects />
 
       {/* Contact and Social Connections */}
       <Contact />
