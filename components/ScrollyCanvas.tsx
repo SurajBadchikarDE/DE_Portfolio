@@ -82,9 +82,27 @@ export default function ScrollyCanvas() {
     const ch = canvas.height;
     const ir = img.naturalWidth / img.naturalHeight;
     const cr = cw / ch;
+    
     let dw = cw, dh = ch, dx = 0, dy = 0;
-    if (cr > ir) { dh = cw / ir; dy = (ch - dh) / 2; }
-    else { dw = ch * ir; dx = (cw - dw) / 2; }
+    const isNarrow = window.innerWidth < 768;
+    
+    if (isNarrow) {
+      // Contain/shrink width on narrow viewports
+      dw = cw;
+      dh = cw / ir;
+      dx = 0;
+      dy = (ch - dh) / 2;
+    } else {
+      // Cover full screen on desktop
+      if (cr > ir) {
+        dh = cw / ir;
+        dy = (ch - dh) / 2;
+      } else {
+        dw = ch * ir;
+        dx = (cw - dw) / 2;
+      }
+    }
+    
     ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(img, dx, dy, dw, dh);
   }, []);
@@ -207,10 +225,12 @@ export default function ScrollyCanvas() {
         lockScroll();
       }
     };
+    let lastInteractionTime = Date.now();
 
     // ── Wheel handler ──────────────────────────────────────────────────────
     const onWheel = (e: WheelEvent) => {
       if (!isLockedRef.current) return;
+      lastInteractionTime = Date.now();
       e.preventDefault();
 
       const newTarget = Math.max(0, Math.min(1,
@@ -257,6 +277,7 @@ export default function ScrollyCanvas() {
     const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0].clientY; };
     const onTouchMove = (e: TouchEvent) => {
       if (!isLockedRef.current) return;
+      lastInteractionTime = Date.now();
       e.preventDefault();
       const dy = touchStartY - e.touches[0].clientY;
       touchStartY = e.touches[0].clientY;
@@ -293,6 +314,39 @@ export default function ScrollyCanvas() {
       }
     };
 
+    // ── Auto-advance frames when idle ──────────────────────────────────────
+    let autoAdvanceRaf: number | null = null;
+    const autoAdvanceLoop = () => {
+      if (isLockedRef.current) {
+        const timeSinceLastInteraction = Date.now() - lastInteractionTime;
+        if (timeSinceLastInteraction > 3500) {
+          // Play forward slowly: 0.0006 per frame (~3.6% per second)
+          const nextTarget = Math.min(1, targetProgressRef.current + 0.0006);
+          targetProgressRef.current = nextTarget;
+          startAnimLoop();
+
+          if (nextTarget >= 1) {
+            isCompletedRef.current = true;
+            document.body.style.transition = 'opacity 0.35s ease';
+            document.body.style.opacity   = '0';
+            setTimeout(() => {
+              const sec = sectionRef.current;
+              const pastSection = sec
+                ? sec.offsetTop + sec.offsetHeight + 2
+                : savedScrollY.current + window.innerHeight;
+              unlockScroll(pastSection);
+              requestAnimationFrame(() => requestAnimationFrame(() => {
+                document.body.style.opacity = '1';
+                setTimeout(() => { document.body.style.transition = ''; }, 400);
+              }));
+            }, 350);
+          }
+        }
+      }
+      autoAdvanceRaf = requestAnimationFrame(autoAdvanceLoop);
+    };
+    autoAdvanceRaf = requestAnimationFrame(autoAdvanceLoop);
+
     window.addEventListener("scroll", onWindowScroll, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -306,6 +360,7 @@ export default function ScrollyCanvas() {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", resize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (autoAdvanceRaf) cancelAnimationFrame(autoAdvanceRaf);
       unlockScroll();
     };
   }, [isLoading, drawFrame, startAnimLoop, lockScroll, unlockScroll, scrollProgress]);

@@ -63,6 +63,63 @@ export default function Hero() {
     };
   }, [scrollYProgressRaw]);
 
+  // ── Auto Scroll when idle ──────────────────────────────────────────────────
+  useEffect(() => {
+    let lastInteractionTime = Date.now();
+    let autoScrollRaf: number | null = null;
+    let isAutoScrolling = false;
+
+    const resetTimer = () => {
+      if (isAutoScrolling) return;
+      lastInteractionTime = Date.now();
+      if (autoScrollRaf) {
+        cancelAnimationFrame(autoScrollRaf);
+        autoScrollRaf = null;
+      }
+    };
+
+    const autoScrollLoop = () => {
+      const element = sectionRef.current;
+      if (!element) return;
+      const elementHeight = element.offsetHeight || (6 * window.innerHeight);
+      
+      // Auto-scroll slowly through Hero until we are very close to transitioning (scrollY is near elementHeight - window.innerHeight)
+      if (window.scrollY < elementHeight - window.innerHeight - 30) {
+        isAutoScrolling = true;
+        window.scrollBy(0, 1.2);
+        setTimeout(() => { isAutoScrolling = false; }, 0);
+        autoScrollRaf = requestAnimationFrame(autoScrollLoop);
+      } else {
+        autoScrollRaf = null;
+        isAutoScrolling = false;
+      }
+    };
+
+    const checkTimeout = () => {
+      if (Date.now() - lastInteractionTime > 3500 && !autoScrollRaf) {
+        autoScrollLoop();
+      }
+    };
+
+    const interval = setInterval(checkTimeout, 500);
+
+    window.addEventListener("scroll", resetTimer, { passive: true });
+    window.addEventListener("wheel", resetTimer, { passive: true });
+    window.addEventListener("touchstart", resetTimer, { passive: true });
+    window.addEventListener("mousemove", resetTimer, { passive: true });
+    window.addEventListener("keydown", resetTimer, { passive: true });
+
+    return () => {
+      clearInterval(interval);
+      if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
+      window.removeEventListener("scroll", resetTimer);
+      window.removeEventListener("wheel", resetTimer);
+      window.removeEventListener("touchstart", resetTimer);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keydown", resetTimer);
+    };
+  }, []);
+
   // ── Step 1 — immediately visible; exit is scroll-driven ─────────────────
   const s1Opacity = useTransform(scrollYProgress, [0.0, 0.10, 0.15], [1, 1, 0]);
   const s1Y       = useTransform(scrollYProgress, [0.10, 0.15], [0, -24]);

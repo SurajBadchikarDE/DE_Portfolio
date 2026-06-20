@@ -170,33 +170,33 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
                 className="absolute left-6 md:left-12 right-6 md:right-auto pointer-events-auto"
               >
                 <div
-                  className={`glass-card p-6 md:p-8 rounded-2xl border ${
+                  className={`glass-card p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl border ${
                     step.isGold
                       ? "border-[#FFD700]/30 shadow-[0_0_40px_rgba(255,215,0,0.12)] bg-[#FFD700]/[0.02]"
                       : "border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.4)]"
-                  } flex flex-col gap-4 max-w-md backdrop-blur-xl`}
+                  } flex flex-col gap-2.5 sm:gap-4 max-w-md backdrop-blur-xl`}
                 >
                   {/* Header */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
                         step.isGold
                           ? "bg-[#FFD700]/10 text-[#FFD700]"
                           : "bg-[#00BFFF]/10 text-[#00BFFF]"
                       }`}
                     >
-                      <IconComponent className="w-5 h-5" />
+                      <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
                       <span
-                        className={`text-[10px] font-mono tracking-widest uppercase ${
+                        className={`text-[9px] sm:text-[10px] font-mono tracking-widest uppercase ${
                           step.isGold ? "text-[#FFD700]" : "text-[#00FFFF]"
                         }`}
                       >
                         {step.subtitle}
                       </span>
                       <h3
-                        className={`text-xl md:text-2xl font-bold tracking-tight ${
+                        className={`text-base sm:text-xl md:text-2xl font-bold tracking-tight ${
                           step.isGold ? "text-[#FFD700]" : "text-white"
                         }`}
                       >
@@ -206,16 +206,16 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
                   </div>
 
                   {/* Description */}
-                  <p className="text-slate-300 text-sm font-light leading-relaxed">
+                  <p className="text-slate-300 text-xs sm:text-sm font-light leading-normal sm:leading-relaxed">
                     {step.description}
                   </p>
 
                   {/* Skill chips */}
-                  <div className="flex flex-wrap gap-2 pt-2 border-t border-white/[0.06]">
+                  <div className="flex flex-wrap gap-1 sm:gap-2 pt-2 border-t border-white/[0.06]">
                     {step.chips.map((chip, cIdx) => (
                       <span
                         key={cIdx}
-                        className={`px-3 py-1 rounded-md text-[11px] font-mono border transition-colors ${
+                        className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-md text-[9px] sm:text-[11px] font-mono border transition-colors ${
                           step.isGold
                             ? "bg-[#FFD700]/5 border-[#FFD700]/25 text-[#FFD700]"
                             : "bg-white/5 border-white/10 text-slate-300 hover:border-[#00BFFF] hover:text-white"
