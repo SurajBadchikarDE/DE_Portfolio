@@ -242,7 +242,7 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
       </div>
 
       {/* Status indicator */}
-      <div className="absolute top-8 right-6 md:right-12 pointer-events-auto bg-[#050816]/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 flex items-center gap-3 select-none text-xs font-mono text-slate-400">
+      <div className="absolute top-8 right-6 md:right-12 pointer-events-auto bg-[#050816]/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 hidden md:flex items-center gap-3 select-none text-xs font-mono text-slate-400">
         <div className="w-2 h-2 rounded-full bg-[#00BFFF] animate-ping" />
         <span>PIPELINE SKILL MAP</span>
       </div>

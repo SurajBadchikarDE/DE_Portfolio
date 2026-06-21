@@ -457,8 +457,17 @@ export default function Timeline() {
           </div>
 
           {/* Mobile vertical stacking layout */}
-          <div className="flex flex-col gap-12 lg:hidden">
-            <div className="relative pl-8 border-l border-white/10 flex flex-col gap-12">
+          <div className="flex flex-col gap-12 lg:hidden relative">
+            {/* Mobile vertical timeline line */}
+            <div className="absolute left-[3px] top-4 bottom-4 w-[2px] z-0">
+              <div className="w-full h-full bg-white/5 rounded-full" />
+              <motion.div
+                style={{ scaleY, transformOrigin: "top" }}
+                className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#00BFFF] via-[#8B5CF6] to-[#00FFFF] rounded-full"
+              />
+            </div>
+
+            <div className="relative pl-8 flex flex-col gap-12 z-10">
               <MobileTimelineCard event={eduEvents[0]} />
               <MobileTimelineCard event={internEvents[1]} />
               <MobileTimelineCard event={internEvents[0]} />
