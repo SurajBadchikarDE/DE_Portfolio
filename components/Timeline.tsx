@@ -247,6 +247,19 @@ export default function Timeline() {
 
   const eduEvents: TimelineEvent[] = [
     {
+      period: "2020 – 2023",
+      role: "Bachelor of Computer Applications (BCA)",
+      company: "MES Garware College of Commerce, Pune",
+      type: "edu",
+      employmentType: "Full-time Education",
+      highlights: [
+        "Completed undergraduate studies in Computer Applications, building strong core foundations in software development, programming, and database design.",
+        "1st Place — Won the IT Quizathon competition",
+        "NCC B Certificate holder — developed leadership, teamwork, and structured problem-solving skills.",
+      ],
+      tech: ["Java", "C++", "SQL", "DBMS", "Software Engineering"],
+    },
+    {
       period: "2023 – 2025",
       role: "Master of Computer Applications (MCA)",
       company: "MIT World Peace University, Pune",
@@ -259,19 +272,6 @@ export default function Timeline() {
         "Specialization in cloud-native data systems & algorithms",
       ],
       tech: ["Python", "SQL", "Data Structures", "Cloud Computing", "Distributed Systems"],
-    },
-    {
-      period: "2020 – 2023",
-      role: "Bachelor of Computer Applications (BCA)",
-      company: "MES Garware College of Commerce, Pune",
-      type: "edu",
-      employmentType: "Full-time Education",
-      highlights: [
-        "Completed undergraduate studies in Computer Applications, building strong core foundations in software development, programming, and database design.",
-        "1st Place — Won the IT Quizathon competition",
-        "NCC B Certificate holder — developed leadership, teamwork, and structured problem-solving skills.",
-      ],
-      tech: ["Java", "C++", "SQL", "DBMS", "Software Engineering"],
     }
   ];
 
