@@ -128,35 +128,10 @@ export default function Hero() {
           currentStep !== 1 ? "pointer-events-none" : ""
         }`}
       >
-        <p className="text-4xl sm:text-6xl md:text-7xl font-extralight text-white text-center tracking-tight leading-tight mb-8">
+        <p className="text-4xl sm:text-6xl md:text-7xl font-extralight text-white text-center tracking-tight leading-tight">
           Hi there, I&apos;m{" "}
           <span className="font-black">Suraj.</span>
         </p>
-
-        {/* Scroll Down Indicator Chevron */}
-        <div className="absolute bottom-[10vh] flex flex-col items-center gap-2 pointer-events-none">
-          <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#00BFFF]/70 font-mono">
-            Scroll to explore
-          </span>
-          
-          <div className="w-[1.5px] h-8 bg-white/10 rounded-full overflow-hidden relative">
-            <motion.div
-              animate={{ y: ["-100%", "100%"] }}
-              transition={{ repeat: Infinity, duration: 2.0, ease: "easeInOut" }}
-              className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-[#00BFFF] via-[#00FFFF] to-transparent"
-            />
-          </div>
-
-          <motion.div
-            animate={{ y: [0, 4, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-            className="text-[#00BFFF]"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
-          </motion.div>
-        </div>
       </motion.div>
 
       {/* ────────────────────────────────────────────────────────────────── */}
