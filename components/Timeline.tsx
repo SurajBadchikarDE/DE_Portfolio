@@ -142,8 +142,15 @@ function TimelineCard({ event, side }: CardProps) {
 }
 
 function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
-  const badgeColor = "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]";
-  const glowShadow = "hover:shadow-[0_0_40px_rgba(0,191,255,0.08)] hover:border-[#00BFFF]/20";
+  const isEdu = event.type === "edu";
+  
+  const badgeColor = isEdu
+    ? "bg-[#FFD700]/10 border-[#FFD700]/25 text-[#FFD700]"
+    : "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]";
+
+  const glowShadow = isEdu
+    ? "hover:shadow-[0_0_40px_rgba(255,215,0,0.08)] hover:border-[#FFD700]/20"
+    : "hover:shadow-[0_0_40px_rgba(0,191,255,0.08)] hover:border-[#00BFFF]/20";
 
   return (
     <motion.div
@@ -154,9 +161,14 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
       className="relative w-full"
     >
       {/* Node centered on top edge of full-width container (on vertical line path) */}
-      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-[#00BFFF]/30 flex items-center justify-center">
+      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-white/10 flex items-center justify-center">
         <motion.div 
-          className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full bg-gradient-to-br from-[#00BFFF] to-[#8B5CF6]"
+          className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full"
+          style={{
+            background: isEdu 
+              ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)" 
+              : "radial-gradient(circle, #00BFFF 0%, #8B5CF6 100%)"
+          }}
           whileInView={{ scale: [1, 1.2, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         />
@@ -177,7 +189,7 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
+          <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight mt-0.5 leading-tight">
             {event.company}
           </h2>
 
@@ -245,20 +257,21 @@ export default function Timeline() {
     restDelta: 0.001,
   });
 
-  const eduEvents: TimelineEvent[] = [
-    {
-      period: "2020 – 2023",
-      role: "Bachelor of Computer Applications (BCA)",
-      company: "MES Garware College of Commerce, Pune",
-      type: "edu",
-      employmentType: "Full-time Education",
-      highlights: [
-        "Completed undergraduate studies in Computer Applications, building strong core foundations in software development, programming, and database design.",
-        "1st Place — Won the IT Quizathon competition",
-        "NCC B Certificate holder — developed leadership, teamwork, and structured problem-solving skills.",
-      ],
-      tech: ["Java", "C++", "SQL", "DBMS", "Software Engineering"],
-    },
+  const bcaEvent: TimelineEvent = {
+    period: "2020 – 2023",
+    role: "Bachelor of Computer Applications (BCA)",
+    company: "MES Garware College of Commerce, Pune",
+    type: "edu",
+    employmentType: "Full-time Education",
+    highlights: [
+      "Completed undergraduate studies in Computer Applications, building strong core foundations in software development, programming, and database design.",
+      "1st Place — Won the IT Quizathon competition",
+      "NCC B Certificate holder — developed leadership, teamwork, and structured problem-solving skills.",
+    ],
+    tech: ["Java", "C++", "SQL", "DBMS", "Software Engineering"],
+  };
+
+  const mcaEvents: TimelineEvent[] = [
     {
       period: "2023 – 2025",
       role: "Master of Computer Applications (MCA)",
@@ -358,39 +371,67 @@ export default function Timeline() {
             />
           </div>
 
-          {/* Symmetrical grid for both mobile and desktop views */}
+          {/* Symmetrical timeline mapping chronological phases */}
           <div className="flex flex-col gap-8 sm:gap-12 relative">
             
-            {/* Phase 1: Parallel Education vs Internships (Side-by-Side) */}
-            <div className="grid grid-cols-2 gap-4 sm:gap-20 items-stretch relative">
-              {/* Left Column: Education */}
-              <div className="flex flex-col gap-4 sm:gap-8 text-right pr-2 sm:pr-4 justify-start">
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04] justify-end">
+            {/* Phase 1: Undergraduate Education (BCA - Centered at the top) */}
+            <div className="flex flex-col items-center mb-6 sm:mb-12 relative">
+              <div className="w-full max-w-2xl flex flex-col items-center mb-6">
+                <div className="flex items-center gap-2 sm:gap-3 pb-2 border-b border-white/[0.04] justify-center">
                   <GraduationCap className="w-4 h-4 sm:w-6 sm:h-6 text-[#FFD700]" />
                   <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
-                    Education
+                    Undergraduate Education
                   </h3>
                 </div>
-                {eduEvents.map((event, idx) => (
-                  <TimelineCard key={idx} event={event} side="left" />
-                ))}
               </div>
 
-              {/* Right Column: Internships */}
-              <div className="flex flex-col gap-4 sm:gap-8 pl-2 sm:pl-4 justify-start">
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04]">
-                  <Briefcase className="w-4 h-4 sm:w-6 sm:h-6 text-[#8B5CF6]" />
-                  <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
-                    Internships
-                  </h3>
-                </div>
-                {internEvents.map((event, idx) => (
-                  <TimelineCard key={idx} event={event} side="right" />
-                ))}
+              {/* BCA card */}
+              <div className="w-full max-w-2xl relative z-10 px-2 sm:px-0">
+                <TimelineCardFullWidth event={bcaEvent} />
               </div>
             </div>
 
-            {/* Part 2: Full-Time Experience (Centered Below) */}
+            {/* Phase 2: Parallel Postgraduate Education vs Internships (Side-by-Side) */}
+            <div className="relative">
+              <div className="w-full flex flex-col items-center mb-8">
+                <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6 sm:mb-8" />
+                <div className="flex items-center gap-2 sm:gap-3 justify-center text-center">
+                  <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#00FFFF]">
+                    Parallel Postgraduate Path (2023 - 2025)
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 sm:gap-20 items-stretch relative">
+                {/* Left Column: Postgraduate Education (MCA) */}
+                <div className="flex flex-col gap-4 sm:gap-8 text-right pr-2 sm:pr-4 justify-start">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04] justify-end">
+                    <GraduationCap className="w-4 h-4 sm:w-6 sm:h-6 text-[#FFD700]" />
+                    <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
+                      Postgraduate Education
+                    </h3>
+                  </div>
+                  {mcaEvents.map((event, idx) => (
+                    <TimelineCard key={idx} event={event} side="left" />
+                  ))}
+                </div>
+
+                {/* Right Column: Internships */}
+                <div className="flex flex-col gap-4 sm:gap-8 pl-2 sm:pl-4 justify-start">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04]">
+                    <Briefcase className="w-4 h-4 sm:w-6 sm:h-6 text-[#8B5CF6]" />
+                    <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
+                      Internships
+                    </h3>
+                  </div>
+                  {internEvents.map((event, idx) => (
+                    <TimelineCard key={idx} event={event} side="right" />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Phase 3: Full-Time Experience (Centered Below) */}
             <div className="flex flex-col items-center mt-6 sm:mt-12 relative">
               <div className="w-full max-w-2xl flex flex-col items-center mb-6 sm:mb-8">
                 <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6 sm:mb-8" />
@@ -405,7 +446,7 @@ export default function Timeline() {
               {/* Bizmetric full-time card */}
               <div className="w-full max-w-2xl relative z-10 px-2 sm:px-0">
                 {fullTimeEvents.map((event, idx) => (
-                  <TimelineCardFullWidth key={idx} event={event} />
+                  <TimelineCardFullWidth event={event} />
                 ))}
               </div>
             </div>
