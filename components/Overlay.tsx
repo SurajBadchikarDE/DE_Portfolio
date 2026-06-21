@@ -20,6 +20,7 @@ interface PipelineStep {
 
 export default function Overlay({ scrollYProgress }: OverlayProps) {
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     handleResize();

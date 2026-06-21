@@ -26,8 +26,7 @@ export default function Hero() {
     const timer = setInterval(() => {
       setCurrentStep((prev) => {
         if (prev < 5) return prev + 1;
-        clearInterval(timer);
-        return prev;
+        return 1; // Loop back to step 1
       });
     }, 2600); // 2.6 seconds per step for comfortable reading
     return () => clearInterval(timer);
@@ -102,7 +101,7 @@ export default function Hero() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div style={{ height: "100vh" }} className="relative w-full overflow-hidden bg-[#050816]">
+    <div id="hero-section" style={{ height: "100vh" }} className="relative w-full overflow-hidden bg-[#050816]">
 
       {/* Ambient glows */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -139,7 +138,11 @@ export default function Hero() {
       {/* ────────────────────────────────────────────────────────────────── */}
       <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 ${
         currentStep !== 2 ? "pointer-events-none" : ""
-      }`} style={{ opacity: currentStep >= 2 ? 1 : 0, visibility: currentStep >= 2 ? "visible" : "hidden" }}>
+      }`} style={{ 
+        opacity: currentStep === 2 ? 1 : 0, 
+        visibility: currentStep === 2 ? "visible" : "hidden",
+        transition: "opacity 0.5s ease, visibility 0.5s ease"
+      }}>
         <motion.h1
           animate={{
             opacity: currentStep === 2 ? 1 : 0,
@@ -172,7 +175,11 @@ export default function Hero() {
       {/* ────────────────────────────────────────────────────────────────── */}
       <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center ${
         currentStep !== 3 ? "pointer-events-none" : ""
-      }`} style={{ opacity: currentStep >= 3 ? 1 : 0, visibility: currentStep >= 3 ? "visible" : "hidden" }}>
+      }`} style={{ 
+        opacity: currentStep === 3 ? 1 : 0, 
+        visibility: currentStep === 3 ? "visible" : "hidden",
+        transition: "opacity 0.5s ease, visibility 0.5s ease"
+      }}>
         <motion.p
           animate={{
             opacity: currentStep === 3 ? 1 : 0,
@@ -223,7 +230,11 @@ export default function Hero() {
       {/* ────────────────────────────────────────────────────────────────── */}
       <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center ${
         currentStep !== 4 ? "pointer-events-none" : ""
-      }`} style={{ opacity: currentStep >= 4 ? 1 : 0, visibility: currentStep >= 4 ? "visible" : "hidden" }}>
+      }`} style={{ 
+        opacity: currentStep === 4 ? 1 : 0, 
+        visibility: currentStep === 4 ? "visible" : "hidden",
+        transition: "opacity 0.5s ease, visibility 0.5s ease"
+      }}>
         <motion.p
           animate={{
             opacity: currentStep === 4 ? 1 : 0,
@@ -261,7 +272,11 @@ export default function Hero() {
       {/* ────────────────────────────────────────────────────────────────── */}
       <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center px-6 md:px-20 ${
         currentStep !== 5 ? "pointer-events-none" : ""
-      }`} style={{ opacity: currentStep >= 5 ? 1 : 0, visibility: currentStep >= 5 ? "visible" : "hidden" }}>
+      }`} style={{ 
+        opacity: currentStep === 5 ? 1 : 0, 
+        visibility: currentStep === 5 ? "visible" : "hidden",
+        transition: "opacity 0.5s ease, visibility 0.5s ease"
+      }}>
         <div className="max-w-2xl w-full flex flex-col gap-6">
           {/* Eyebrow */}
           <motion.div

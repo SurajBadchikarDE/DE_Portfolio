@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Linkedin, Github, Mail, Copy, Check, MessageSquareCode } from "lucide-react";
+import { Linkedin, Github, Mail, Copy, Check, MessageSquareCode, Download } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function Contact() {
@@ -28,7 +28,7 @@ export default function Contact() {
   };
 
   return (
-    <section className="relative w-full py-32 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02] flex flex-col justify-center items-center">
+    <section id="contact-section" className="relative w-full py-32 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02] flex flex-col justify-center items-center">
       {/* Background Radial Glow */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vw] h-[40vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.05)_0%,rgba(0,0,0,0)_60%)] blur-3xl" />
@@ -62,7 +62,7 @@ export default function Contact() {
         </div>
 
         {/* Buttons Layer */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6 w-full max-w-md">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6 w-full max-w-2xl">
           {/* Email button with copy-clipboard confetti */}
           <button
             onClick={handleEmailAction}
@@ -96,6 +96,16 @@ export default function Contact() {
               )}
             </AnimatePresence>
           </button>
+
+          {/* Download Resume Link */}
+          <a
+            href="/resume/Suraj_Badchikar_Resume.pdf"
+            download="Suraj_Badchikar_Resume.pdf"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-white/10 hover:border-[#FFD700] hover:shadow-[0_0_25px_rgba(255,215,0,0.3)] flex items-center justify-center gap-2"
+          >
+            <Download className="w-4 h-4 text-[#FFD700]" />
+            <span>Download Resume</span>
+          </a>
 
           {/* LinkedIn Link */}
           <a

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useMotionValue } from "framer-motion";
+import { RotateCcw } from "lucide-react";
 import Overlay from "./Overlay";
 
 const TOTAL_FRAMES = 240;
@@ -19,6 +20,8 @@ export default function ScrollyCanvas() {
 
   const isLockedRef = useRef(false);
   const isCompletedRef = useRef(false);
+  const isBypassingRef = useRef(false);
+  const isReplayingRef = useRef(false);
   const savedScrollY = useRef(0);
   const lastScrollY = useRef(0);
 
@@ -173,6 +176,7 @@ export default function ScrollyCanvas() {
 
     // ── Window scroll: detect section approaching viewport top ─────────────
     const onWindowScroll = () => {
+      if (isBypassingRef.current) return;
       const scrollingDown = window.scrollY >= lastScrollY.current;
       lastScrollY.current = window.scrollY;
 
@@ -223,6 +227,7 @@ export default function ScrollyCanvas() {
 
     // ── Wheel handler ──────────────────────────────────────────────────────
     const onWheel = (e: WheelEvent) => {
+      if (isReplayingRef.current) return;
       if (!isLockedRef.current) return;
       lastInteractionTime = Date.now();
       e.preventDefault();
@@ -271,6 +276,7 @@ export default function ScrollyCanvas() {
     let touchStartY = 0;
     const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0].clientY; };
     const onTouchMove = (e: TouchEvent) => {
+      if (isReplayingRef.current) return;
       if (!isLockedRef.current) return;
       lastInteractionTime = Date.now();
       e.preventDefault();
@@ -309,39 +315,121 @@ export default function ScrollyCanvas() {
       }
     };
 
-    // ── Auto-advance frames when idle ──────────────────────────────────────
-    let autoAdvanceRaf: number | null = null;
-    const autoAdvanceLoop = () => {
-      if (isLockedRef.current) {
-        const timeSinceLastInteraction = Date.now() - lastInteractionTime;
-        if (timeSinceLastInteraction > 3500) {
-          // Play forward slowly: 0.0006 per frame (~3.6% per second)
-          const nextTarget = Math.min(1, targetProgressRef.current + 0.0006);
-          targetProgressRef.current = nextTarget;
-          startAnimLoop();
 
-          if (nextTarget >= 1) {
-            isCompletedRef.current = true;
-            document.body.style.transition = 'opacity 0.35s ease';
-            document.body.style.opacity   = '0';
-            setTimeout(() => {
-              const sec = sectionRef.current;
-              const pastSection = sec
-                ? sec.offsetTop + sec.offsetHeight + 2
-                : savedScrollY.current + window.innerHeight;
-              unlockScroll(pastSection);
-              setTimeout(() => {
-                document.body.style.opacity = '1';
-                setTimeout(() => { document.body.style.transition = ''; }, 400);
-              }, 150);
-            }, 350);
-          }
-        }
+
+    const handleBypassScroll = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const targetHref = customEvent.detail?.targetHref;
+      if (!targetHref) return;
+
+      isBypassingRef.current = true;
+
+      const belowSections = [
+        "#skills-section",
+        "#certifications-section",
+        "#timeline-section",
+        "#projects-section",
+        "#contact-section",
+      ];
+      const aboveSections = ["#hero-section", "#pipeline-section"];
+
+      if (belowSections.includes(targetHref)) {
+        isCompletedRef.current = true;
+        targetProgressRef.current = 1;
+        currentProgressRef.current = 1;
+        scrollProgress.set(1);
+        drawFrame(1);
+      } else if (aboveSections.includes(targetHref)) {
+        isCompletedRef.current = false;
+        targetProgressRef.current = 0;
+        currentProgressRef.current = 0;
+        scrollProgress.set(0);
+        drawFrame(0);
       }
-      autoAdvanceRaf = requestAnimationFrame(autoAdvanceLoop);
-    };
-    autoAdvanceRaf = requestAnimationFrame(autoAdvanceLoop);
 
+      // Unlock body scroll if it was locked
+      document.body.style.overflow = "";
+      isLockedRef.current = false;
+
+      const clearBypass = () => {
+        isBypassingRef.current = false;
+        window.removeEventListener("scrollend", clearBypass);
+        if (targetHref === "#pipeline-section") {
+          lockScroll();
+        }
+      };
+
+      window.addEventListener("scrollend", clearBypass);
+      // Fallback timer
+      setTimeout(clearBypass, 1200);
+    };
+
+    let replayRaf: number | null = null;
+    const startReplay = () => {
+      lockScroll();
+      isCompletedRef.current = false;
+      targetProgressRef.current = 0;
+      currentProgressRef.current = 0;
+      scrollProgress.set(0);
+      drawFrame(0);
+
+      const duration = 12000; // 12 seconds of play time for slower, readable transitions
+      const startTime = Date.now();
+
+      const playLoop = () => {
+        if (!isReplayingRef.current) return;
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min(1, elapsed / duration);
+        const easePct = pct < 0.5 ? 2 * pct * pct : 1 - Math.pow(-2 * pct + 2, 2) / 2;
+
+        currentProgressRef.current = easePct;
+        targetProgressRef.current = easePct;
+        scrollProgress.set(easePct);
+        drawFrame(easePct);
+
+        if (pct < 1) {
+          replayRaf = requestAnimationFrame(playLoop);
+        } else {
+          isReplayingRef.current = false;
+          isCompletedRef.current = true;
+
+          // Fade body out -> unlock scroll -> fade back in
+          document.body.style.transition = 'opacity 0.35s ease';
+          document.body.style.opacity   = '0';
+          setTimeout(() => {
+            const sec = sectionRef.current;
+            const pastSection = sec
+              ? sec.offsetTop + sec.offsetHeight + 2
+              : savedScrollY.current + window.innerHeight;
+            unlockScroll(pastSection);
+            setTimeout(() => {
+              document.body.style.opacity = '1';
+              setTimeout(() => { document.body.style.transition = ''; }, 400);
+            }, 150);
+          }, 350);
+        }
+      };
+
+      replayRaf = requestAnimationFrame(playLoop);
+    };
+
+    const handleReplayEvent = () => {
+      if (isReplayingRef.current) return;
+      isReplayingRef.current = true;
+
+      const section = sectionRef.current;
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => {
+          startReplay();
+        }, 800);
+      } else {
+        startReplay();
+      }
+    };
+
+    window.addEventListener("replayPipeline", handleReplayEvent);
+    window.addEventListener("bypassScroll", handleBypassScroll);
     window.addEventListener("scroll", onWindowScroll, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -349,72 +437,94 @@ export default function ScrollyCanvas() {
     window.addEventListener("resize", resize);
 
     return () => {
+      window.removeEventListener("replayPipeline", handleReplayEvent);
+      window.removeEventListener("bypassScroll", handleBypassScroll);
       window.removeEventListener("scroll", onWindowScroll);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", resize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (autoAdvanceRaf) cancelAnimationFrame(autoAdvanceRaf);
+      if (replayRaf) cancelAnimationFrame(replayRaf);
       unlockScroll();
     };
   }, [isLoading, drawFrame, startAnimLoop, lockScroll, unlockScroll, scrollProgress]);
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div
-      ref={sectionRef}
-      id="pipeline-section"
-      style={{ position: "relative", height: "100vh" }}
-      className="w-full bg-[#050816]"
-    >
-      <canvas
-        ref={canvasRef}
-        style={{ position: "absolute", inset: 0, display: "block" }}
-      />
+    <>
+      <div
+        ref={sectionRef}
+        id="pipeline-section"
+        style={{ position: "relative", height: "100vh" }}
+        className="w-full bg-[#050816]"
+      >
+        <canvas
+          ref={canvasRef}
+          style={{ position: "absolute", inset: 0, display: "block" }}
+        />
 
-      {/* Vignette */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}
-        className="bg-gradient-to-b from-[#050816] via-transparent to-[#050816] opacity-60" />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}
-        className="bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,8,22,0.55)_100%)]" />
+        {/* Vignette */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}
+          className="bg-gradient-to-b from-[#050816] via-transparent to-[#050816] opacity-60" />
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}
+          className="bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,8,22,0.55)_100%)]" />
 
-      {/* Overlay panels */}
-      {!isLoading && (
-        <div style={{ position: "absolute", inset: 0, zIndex: 30, pointerEvents: "none" }}>
-          <Overlay scrollYProgress={scrollProgress} />
-        </div>
-      )}
+        {/* Overlay panels */}
+        {!isLoading && (
+          <div style={{ position: "absolute", inset: 0, zIndex: 30, pointerEvents: "none" }}>
+            <Overlay scrollYProgress={scrollProgress} />
+          </div>
+        )}
 
-      {/* Preloader */}
-      {isLoading && (
-        <div style={{ position: "absolute", inset: 0, zIndex: 50 }}
-          className="bg-[#050816] flex flex-col justify-center items-center px-4"
-        >
-          <div className="max-w-md w-full p-8 rounded-2xl border border-white/10 flex flex-col items-center gap-6 bg-white/[0.02] backdrop-blur-xl shadow-[0_0_50px_rgba(0,191,255,0.1)]">
-            <div className="relative w-16 h-16 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-white/10" />
-              <div className="absolute inset-0 rounded-full border-t border-r border-[#00BFFF] animate-spin"
-                style={{ animationDuration: "1s" }} />
-              <span className="text-[#00BFFF] font-mono text-sm">{loadProgress}%</span>
-            </div>
-            <div className="w-full bg-white/5 h-[3px] rounded-full overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] h-full rounded-full transition-all duration-300"
-                style={{ width: `${loadProgress}%` }}
-              />
-            </div>
-            <div className="text-center">
-              <h3 className="text-white text-sm font-semibold tracking-wider uppercase mb-1">
-                Syncing Node Clusters
-              </h3>
-              <p className="text-slate-400 text-xs font-mono animate-pulse uppercase tracking-widest">
-                {loaderStatus}
-              </p>
+        {/* Preloader */}
+        {isLoading && (
+          <div style={{ position: "absolute", inset: 0, zIndex: 50 }}
+            className="bg-[#050816] flex flex-col justify-center items-center px-4"
+          >
+            <div className="max-w-md w-full p-8 rounded-2xl border border-white/10 flex flex-col items-center gap-6 bg-white/[0.02] backdrop-blur-xl shadow-[0_0_50px_rgba(0,191,255,0.1)]">
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border border-white/10" />
+                <div className="absolute inset-0 rounded-full border-t border-r border-[#00BFFF] animate-spin"
+                  style={{ animationDuration: "1s" }} />
+                <span className="text-[#00BFFF] font-mono text-sm">{loadProgress}%</span>
+              </div>
+              <div className="w-full bg-white/5 h-[3px] rounded-full overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-[#00BFFF] via-[#00FFFF] to-[#8B5CF6] h-full rounded-full transition-all duration-300"
+                  style={{ width: `${loadProgress}%` }}
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-white text-sm font-semibold tracking-wider uppercase mb-1">
+                  Syncing Node Clusters
+                </h3>
+                <p className="text-slate-400 text-xs font-mono animate-pulse uppercase tracking-widest">
+                  {loaderStatus}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+
+      {/* Programmatic Replay Trigger Section sitting directly below the video */}
+      <div className="w-full bg-[#050816] py-10 flex justify-center border-b border-white/[0.02]">
+        <button
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("replayPipeline"));
+            }
+          }}
+          className="relative px-8 py-3.5 rounded-full bg-[#050816]/90 border border-[#00BFFF]/30 text-white font-mono text-xs uppercase tracking-widest cursor-pointer hover:border-[#00FFFF] hover:shadow-[0_0_30px_rgba(0,191,255,0.4)] transition-all duration-300 flex items-center gap-2.5 group"
+        >
+          {/* Pulsing Back Glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#00BFFF] to-[#8B5CF6] rounded-full blur-md opacity-35 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none -z-10" />
+          
+          <RotateCcw className="w-4 h-4 text-[#00FFFF] group-hover:rotate-180 transition-transform duration-700 relative z-10" />
+          <span className="relative z-10">Play this video again</span>
+        </button>
+      </div>
+    </>
   );
 }

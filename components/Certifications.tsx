@@ -56,7 +56,7 @@ export default function Certifications() {
   ];
 
   return (
-    <section className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
+    <section id="certifications-section" className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.02)_0%,rgba(0,0,0,0)_60%)] blur-3xl" />
       </div>

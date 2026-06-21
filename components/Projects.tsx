@@ -91,7 +91,7 @@ export default function Projects() {
   ];
 
   return (
-    <section className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
+    <section id="projects-section" className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-[20%] left-[20%] w-[35vw] h-[35vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.03)_0%,rgba(0,0,0,0)_60%)] blur-3xl" />
         <div className="absolute bottom-[20%] right-[20%] w-[45vw] h-[45vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.04)_0%,rgba(0,0,0,0)_70%)] blur-3xl" />

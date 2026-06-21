@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import ScrollyCanvas from "@/components/ScrollyCanvas";
+import Navbar from "@/components/Navbar";
 
 // Lazy-load sections below the fold to optimize page speed and memory footprint
 const TechStack = dynamic(() => import("@/components/TechStack"), {
@@ -24,6 +25,9 @@ const Contact = dynamic(() => import("@/components/Contact"), {
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#050816] text-white">
+      {/* Premium overlay navigation Navbar */}
+      <Navbar />
+
       {/* Hero Intro Section (100vh) */}
       <Hero />
 

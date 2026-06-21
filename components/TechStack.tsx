@@ -157,7 +157,7 @@ export default function TechStack() {
   ];
 
   return (
-    <section className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
+    <section id="skills-section" className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
       {/* Decorative Radial Backgrounds */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-1/2 left-[80%] -translate-y-1/2 w-[40vw] h-[40vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.04)_0%,rgba(0,0,0,0)_70%)] blur-3xl" />

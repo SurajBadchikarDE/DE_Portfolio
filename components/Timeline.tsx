@@ -336,7 +336,7 @@ export default function Timeline() {
   ];
 
   return (
-    <section className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
+    <section id="timeline-section" className="relative w-full py-24 bg-[#050816] overflow-hidden select-none border-t border-white/[0.02]">
       {/* Ambient background glow */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute bottom-[10%] left-[20%] w-[35vw] h-[35vw] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,191,255,0.02)_0%,rgba(0,0,0,0)_60%)] blur-3xl" />
