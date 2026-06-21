@@ -138,10 +138,8 @@ export default function ScrollyCanvas() {
     const snapY = section ? section.offsetTop : window.scrollY;
     window.scrollTo(0, snapY);
     savedScrollY.current = snapY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${snapY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
+    
+    // Hide scrollbar and prevent native body scrolling without using position: fixed
     document.body.style.overflow = "hidden";
     isLockedRef.current = true;
   }, []);
@@ -149,10 +147,6 @@ export default function ScrollyCanvas() {
   // ── Unlock scroll — restores page to target position ─────────────────────
   const unlockScroll = useCallback((targetY?: number) => {
     if (!isLockedRef.current) return;
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.left = "";
-    document.body.style.right = "";
     document.body.style.overflow = "";
     window.scrollTo(0, targetY ?? savedScrollY.current);
     isLockedRef.current = false;

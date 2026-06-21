@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import { Database, Download, Cpu, ShieldCheck, BarChart4, Wrench } from "lucide-react";
 
@@ -18,6 +19,14 @@ interface PipelineStep {
 }
 
 export default function Overlay({ scrollYProgress }: OverlayProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const steps: PipelineStep[] = [
     {
       title: "Raw Data Sources",
@@ -212,10 +221,10 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
 
                   {/* Skill chips */}
                   <div className="flex flex-wrap gap-1 sm:gap-2 pt-2 border-t border-white/[0.06]">
-                    {step.chips.map((chip, cIdx) => (
+                    {(isMobile ? step.chips.slice(0, 5) : step.chips).map((chip, cIdx) => (
                       <span
                         key={cIdx}
-                        className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-md text-[9px] sm:text-[11px] font-mono border transition-colors ${
+                        className={`px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md text-[8px] sm:text-[11px] font-mono border transition-colors ${
                           step.isGold
                             ? "bg-[#FFD700]/5 border-[#FFD700]/25 text-[#FFD700]"
                             : "bg-white/5 border-white/10 text-slate-300 hover:border-[#00BFFF] hover:text-white"
