@@ -290,17 +290,6 @@ export default function Timeline() {
 
   const internEvents: TimelineEvent[] = [
     {
-      period: "Oct 2024 – Dec 2024",
-      role: "Software Developer Intern",
-      company: "WebWeaver",
-      type: "work",
-      employmentType: "Internship",
-      highlights: [
-        "Contributed to backend API integration and data layer development using PostgreSQL, supporting full-stack feature delivery in a team environment.",
-      ],
-      tech: ["PostgreSQL", "REST APIs", "Python", "Git"],
-    },
-    {
       period: "Jan 2024 – Jul 2024",
       role: "IT Intern",
       company: "KWMCS Ventures",
@@ -310,6 +299,17 @@ export default function Timeline() {
         "Supported application development with relational database design and backend integration in a remote, agile team environment.",
       ],
       tech: ["PostgreSQL", "SQL", "Backend Integration", "Agile"],
+    },
+    {
+      period: "Oct 2024 – Dec 2024",
+      role: "Software Developer Intern",
+      company: "WebWeaver",
+      type: "work",
+      employmentType: "Internship",
+      highlights: [
+        "Contributed to backend API integration and data layer development using PostgreSQL, supporting full-stack feature delivery in a team environment.",
+      ],
+      tech: ["PostgreSQL", "REST APIs", "Python", "Git"],
     }
   ];
 

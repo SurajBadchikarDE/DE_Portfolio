@@ -1,13 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Award, ShieldCheck, CheckCircle2, ExternalLink } from "lucide-react";
 
 interface CertificationItem {
   name: string;
   authority: string;
   exam: string;
-  description: string;
   badgeColor: string;
   glowColor: string;
   id: string;
@@ -22,36 +20,40 @@ export default function Certifications() {
       name: "Databricks Certified Data Engineer Professional",
       authority: "Databricks",
       exam: "Professional Level",
-      description:
-        "Advanced-level expertise in PySpark optimisations, Delta Lake concurrency controls, data governance using Unity Catalog, and structuring enterprise-grade production pipelines.",
       badgeColor: "#FFD700",
       glowColor: "rgba(255, 215, 0, 0.2)",
       delayClass: "",
-      verifyUrl: "https://credentials.databricks.com/",
+      verifyUrl: "https://credentials.databricks.com/0d7ebe5f-c823-4c35-a4fb-4c26fa69f300##acc.aMZeW7ON",
+    },
+    {
+      id: "databricks-associate",
+      name: "Databricks Certified Associate Data Engineer",
+      authority: "Databricks",
+      exam: "Associate Level",
+      badgeColor: "#FFA500",
+      glowColor: "rgba(255, 165, 0, 0.2)",
+      delayClass: "[animation-delay:1.5s]",
+      verifyUrl: "https://credentials.databricks.com/5d611007-6e04-4292-ab5f-ea1ba735f1e4?utm_source=linkedin&utm_medium=social",
     },
     {
       id: "snowflake-core",
       name: "Snowflake SnowPro Core Certification",
       authority: "Snowflake",
       exam: "SnowPro Core",
-      description:
-        "Comprehensive understanding of Snowflake cloud warehouse architecture, zero-copy cloning, secure data shares, external stages, and performance optimisations at scale.",
       badgeColor: "#00BFFF",
       glowColor: "rgba(0, 191, 255, 0.2)",
-      delayClass: "[animation-delay:2s]",
-      verifyUrl: "https://achieve.snowflake.com/",
+      delayClass: "[animation-delay:3s]",
+      verifyUrl: "https://achieve.snowflake.com/ced98f6d-8067-4735-bde6-8b2fdbdf0417##acc.j2uL4dxp",
     },
     {
       id: "microsoft-fabric",
       name: "Microsoft Certified: Fabric Data Engineer Associate",
       authority: "Microsoft",
       exam: "DP-700",
-      description:
-        "Validated proficiency in Microsoft's SaaS analytics fabric — architecting OneLake workspaces, constructing Synapse pipelines, and building semantic report schemas for enterprise BI.",
       badgeColor: "#00FFFF",
       glowColor: "rgba(0, 255, 255, 0.2)",
-      delayClass: "[animation-delay:4s]",
-      verifyUrl: "https://learn.microsoft.com/en-us/credentials/certifications/fabric-data-engineer-associate/",
+      delayClass: "[animation-delay:4.5s]",
+      verifyUrl: "https://learn.microsoft.com/en-us/users/surajbadchikar-3400/credentials/7d4344b02dfd9b4c",
     },
   ];
 
@@ -79,7 +81,7 @@ export default function Certifications() {
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {certs.map((cert) => (
             <div
               key={cert.id}
@@ -120,13 +122,17 @@ export default function Certifications() {
                 </div>
 
                 {/* Name & Details */}
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-lg font-bold text-white leading-snug group-hover:text-white transition-colors">
-                    {cert.name}
-                  </h3>
-                  <p className="text-slate-400 text-xs font-light leading-relaxed">
-                    {cert.description}
-                  </p>
+                <div className="flex flex-col gap-3 min-h-[4rem] w-full justify-center">
+                  <a
+                    href={cert.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#00FFFF] transition-colors"
+                  >
+                    <h3 className="text-base sm:text-lg font-bold text-white leading-snug group-hover:text-[#00FFFF] transition-colors">
+                      {cert.name}
+                    </h3>
+                  </a>
                 </div>
 
                 {/* Footer row */}
