@@ -40,19 +40,21 @@ function TimelineCard({ event, side }: CardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6 }}
-      className={`relative w-full ${side === "left" ? "lg:text-right lg:ml-auto" : "lg:text-left lg:mr-auto"}`}
+      className={`relative w-full ${side === "left" ? "text-right ml-auto" : "text-left mr-auto"}`}
     >
       {/* Central Node (rendered on the divider line) */}
       <div 
-        className="absolute top-1/2 -translate-y-1/2 hidden lg:flex items-center justify-center z-10 w-8 h-8 rounded-full bg-[#050816] border-2 border-white/10"
+        className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-white/10 ${
+          side === "left"
+            ? "right-[-8px] sm:right-[-40px]"
+            : "left-[-8px] sm:left-[-40px]"
+        }`}
         style={{
-          right: side === "left" ? "-40px" : "auto",
-          left: side === "right" ? "-40px" : "auto",
           transform: side === "left" ? "translate(50%, -50%)" : "translate(-50%, -50%)",
         }}
       >
         <motion.div 
-          className="w-3.5 h-3.5 rounded-full"
+          className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full"
           style={{
             background: isEdu 
               ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)" 
@@ -63,13 +65,13 @@ function TimelineCard({ event, side }: CardProps) {
         />
       </div>
 
-      {/* Horizontal Connector Line (desktop only) */}
+      {/* Horizontal Connector Line (desktop/tablet only) */}
       <motion.div
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="absolute top-1/2 -translate-y-1/2 h-[2px] bg-white/10 hidden lg:block z-0"
+        className="absolute top-1/2 -translate-y-1/2 h-[2px] bg-white/10 hidden sm:block z-0"
         style={{
           width: "40px",
           right: side === "left" ? "0" : "auto",
@@ -83,40 +85,40 @@ function TimelineCard({ event, side }: CardProps) {
 
       {/* Card Content */}
       <div
-        className={`glass-card p-6 md:p-8 rounded-2xl border border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-xl hover:bg-white/[0.03] transition-all duration-300 ${glowShadow}`}
+        className={`glass-card p-3 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl border border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-xl hover:bg-white/[0.03] transition-all duration-300 ${glowShadow}`}
       >
         {/* Header Block */}
-        <div className="flex flex-col gap-2 mb-4">
-          <div className={`flex flex-wrap items-center gap-2.5 ${side === "left" ? "lg:justify-end" : "lg:justify-start"}`}>
-            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border border-white/10 ${badgeColor}`}>
+        <div className="flex flex-col gap-1 sm:gap-2 mb-3 sm:mb-4">
+          <div className={`flex flex-wrap items-center gap-1.5 sm:gap-2.5 ${side === "left" ? "justify-end" : "justify-start"}`}>
+            <span className={`px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-mono font-bold tracking-wider uppercase border border-white/10 ${badgeColor}`}>
               {event.employmentType}
             </span>
-            <span className="text-xs font-mono text-slate-400 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-slate-500" />
+            <span className="text-[10px] sm:text-xs font-mono text-slate-400 flex items-center gap-1">
+              <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-500" />
               {event.period}
             </span>
           </div>
 
-          {/* Company Name (Enlarged) */}
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
+          {/* Company Name */}
+          <h2 className="text-sm sm:text-2xl md:text-3xl font-black text-white tracking-tight mt-0.5 leading-tight">
             {event.company}
           </h2>
 
           {/* Role Title */}
-          <h3 className="text-sm sm:text-base font-semibold tracking-wide text-slate-300">
+          <h3 className="text-[10px] sm:text-sm sm:text-base font-semibold tracking-wide text-slate-300 leading-tight">
             {event.role}
           </h3>
         </div>
 
         {/* Highlights Bullet List */}
-        <div className={`flex flex-col gap-3 mb-4 ${side === "left" ? "lg:items-end" : "lg:items-start"}`}>
+        <div className={`flex flex-col gap-2 sm:gap-3 mb-3 sm:mb-4 ${side === "left" ? "items-end" : "items-start"}`}>
           {event.highlights.map((h, hIdx) => (
             <div 
               key={hIdx} 
-              className={`flex items-start gap-3 ${side === "left" ? "lg:flex-row-reverse lg:text-right" : "lg:flex-row lg:text-left"}`}
+              className={`flex items-start gap-1.5 sm:gap-3 ${side === "left" ? "flex-row-reverse text-right" : "flex-row text-left"}`}
             >
-              <Sparkles className="w-4 h-4 text-[#00FFFF] mt-0.5 shrink-0" />
-              <span className="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#00FFFF] mt-0.5 shrink-0" />
+              <span className="text-slate-300 text-[10px] sm:text-xs md:text-sm font-light leading-relaxed">
                 {h}
               </span>
             </div>
@@ -124,11 +126,11 @@ function TimelineCard({ event, side }: CardProps) {
         </div>
 
         {/* Tech Stack Badges */}
-        <div className={`flex flex-wrap gap-1.5 pt-4 border-t border-white/[0.06] ${side === "left" ? "lg:justify-end" : "lg:justify-start"}`}>
+        <div className={`flex flex-wrap gap-1 sm:gap-1.5 pt-3 sm:pt-4 border-t border-white/[0.06] ${side === "left" ? "justify-end" : "justify-start"}`}>
           {event.tech.map((t, tIdx) => (
             <span
               key={tIdx}
-              className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/5 border border-white/10 text-slate-400 hover:text-slate-200 transition-colors"
+              className="px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded text-[8px] sm:text-[10px] font-mono bg-white/5 border border-white/10 text-slate-400 hover:text-slate-200 transition-colors"
             >
               {t}
             </span>
@@ -152,9 +154,9 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
       className="relative w-full"
     >
       {/* Node centered on top edge of full-width container (on vertical line path) */}
-      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-8 h-8 rounded-full bg-[#050816] border-2 border-[#00BFFF]/30 flex items-center justify-center hidden lg:flex">
+      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-[#00BFFF]/30 flex items-center justify-center">
         <motion.div 
-          className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-[#00BFFF] to-[#8B5CF6]"
+          className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full bg-gradient-to-br from-[#00BFFF] to-[#8B5CF6]"
           whileInView={{ scale: [1, 1.2, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         />
@@ -162,44 +164,44 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
 
       {/* Card Content */}
       <div
-        className={`glass-card p-6 md:p-8 rounded-2xl border border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-xl hover:bg-white/[0.03] transition-all duration-300 ${glowShadow} mt-4`}
+        className={`glass-card p-4 sm:p-8 rounded-xl sm:rounded-2xl border border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-xl hover:bg-white/[0.03] transition-all duration-300 ${glowShadow} mt-4`}
       >
-        <div className="flex flex-col gap-2 mb-4 items-center text-center">
-          <div className="flex flex-wrap items-center gap-2.5 justify-center">
-            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border border-white/10 ${badgeColor}`}>
+        <div className="flex flex-col gap-1 sm:gap-2 mb-3 sm:mb-4 items-center text-center">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 justify-center">
+            <span className={`px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-mono font-bold tracking-wider uppercase border border-white/10 ${badgeColor}`}>
               {event.employmentType}
             </span>
-            <span className="text-xs font-mono text-slate-400 flex items-center gap-1.5">
+            <span className="text-[10px] sm:text-xs font-mono text-slate-400 flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-slate-500" />
               {event.period}
             </span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
+          <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
             {event.company}
           </h2>
 
-          <h3 className="text-sm sm:text-base font-semibold tracking-wide text-slate-300">
+          <h3 className="text-xs sm:text-base font-semibold tracking-wide text-slate-300">
             {event.role}
           </h3>
         </div>
 
-        <div className="flex flex-col gap-3 mb-4 items-start max-w-xl mx-auto">
+        <div className="flex flex-col gap-2 sm:gap-3 mb-3 sm:mb-4 items-start max-w-xl mx-auto">
           {event.highlights.map((h, hIdx) => (
-            <div key={hIdx} className="flex items-start gap-3 text-left">
-              <Sparkles className="w-4 h-4 text-[#00FFFF] mt-0.5 shrink-0" />
-              <span className="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
+            <div key={hIdx} className="flex items-start gap-2 sm:gap-3 text-left">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#00FFFF] mt-0.5 shrink-0" />
+              <span className="text-slate-300 text-[10px] sm:text-sm font-light leading-relaxed">
                 {h}
               </span>
             </div>
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-1.5 pt-4 border-t border-white/[0.06] justify-center">
+        <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-3 sm:pt-4 border-t border-white/[0.06] justify-center">
           {event.tech.map((t, tIdx) => (
             <span
               key={tIdx}
-              className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/5 border border-white/10 text-slate-400 hover:text-slate-200 transition-colors"
+              className="px-1.5 py-0.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-mono bg-white/5 border border-white/10 text-slate-400 hover:text-slate-200 transition-colors"
             >
               {t}
             </span>
@@ -207,65 +209,6 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
         </div>
       </div>
     </motion.div>
-  );
-}
-
-function MobileTimelineCard({ event }: { event: TimelineEvent }) {
-  const isEdu = event.type === "edu";
-  const badgeColor = isEdu
-    ? "bg-[#FFD700]/10 border-[#FFD700]/25 text-[#FFD700]"
-    : event.employmentType === "Full-time"
-    ? "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]"
-    : "bg-[#8B5CF6]/10 border-[#8B5CF6]/25 text-[#8B5CF6]";
-
-  const accentColor = isEdu ? "#FFD700" : event.employmentType === "Full-time" ? "#00BFFF" : "#8B5CF6";
-
-  return (
-    <div className="relative w-full">
-      {/* Mobile left line node */}
-      <div 
-        className="absolute -left-[41px] top-4 w-6 h-6 rounded-full bg-[#050816] border-2 z-10 flex items-center justify-center"
-        style={{ borderColor: accentColor }}
-      >
-        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor }} />
-      </div>
-
-      <div className="glass-card p-6 rounded-xl border border-white/5 bg-white/[0.01]">
-        <div className="flex flex-col gap-1.5 mb-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold tracking-wider uppercase border border-white/10 ${badgeColor}`}>
-              {event.employmentType}
-            </span>
-            <span className="text-xs font-mono text-slate-400 flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-slate-500" />
-              {event.period}
-            </span>
-          </div>
-          <h2 className="text-xl font-bold text-white tracking-tight">{event.company}</h2>
-          <h3 className="text-xs font-medium text-slate-400">{event.role}</h3>
-        </div>
-
-        <div className="flex flex-col gap-2.5 mb-4">
-          {event.highlights.map((h, hIdx) => (
-            <div key={hIdx} className="flex items-start gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#00FFFF] mt-0.5 shrink-0" />
-              <span className="text-slate-300 text-xs font-light leading-relaxed">{h}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/5">
-          {event.tech.map((t, tIdx) => (
-            <span
-              key={tIdx}
-              className="px-2 py-0.5 rounded text-[9px] font-mono bg-white/5 border border-white/5 text-slate-400"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -316,6 +259,19 @@ export default function Timeline() {
         "Specialization in cloud-native data systems & algorithms",
       ],
       tech: ["Python", "SQL", "Data Structures", "Cloud Computing", "Distributed Systems"],
+    },
+    {
+      period: "2020 – 2023",
+      role: "Bachelor of Computer Applications (BCA)",
+      company: "MES Garware College of Commerce, Pune",
+      type: "edu",
+      employmentType: "Full-time Education",
+      highlights: [
+        "Completed undergraduate studies in Computer Applications, building strong core foundations in software development, programming, and database design.",
+        "1st Place — Won the IT Quizathon competition",
+        "NCC B Certificate holder — developed leadership, teamwork, and structured problem-solving skills.",
+      ],
+      tech: ["Java", "C++", "SQL", "DBMS", "Software Engineering"],
     }
   ];
 
@@ -393,8 +349,8 @@ export default function Timeline() {
 
         {/* Timeline body container */}
         <div className="relative">
-          {/* Vertical central timeline line (desktop only) */}
-          <div className="absolute left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 hidden lg:block z-0">
+          {/* Vertical central timeline line */}
+          <div className="absolute left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 z-0">
             <div className="w-full h-full bg-white/5 rounded-full" />
             <motion.div
               style={{ scaleY, transformOrigin: "top" }}
@@ -402,16 +358,16 @@ export default function Timeline() {
             />
           </div>
 
-          {/* Desktop Layout (Split & Full Width Sections) */}
-          <div className="hidden lg:flex flex-col gap-12 relative">
+          {/* Symmetrical grid for both mobile and desktop views */}
+          <div className="flex flex-col gap-8 sm:gap-12 relative">
             
             {/* Phase 1: Parallel Education vs Internships (Side-by-Side) */}
-            <div className="grid grid-cols-2 gap-20 items-stretch relative">
-              {/* Left Column: Education (MIT WPU MCA) */}
-              <div className="flex flex-col gap-8 text-right pr-4 justify-center">
-                <div className="flex items-center gap-3 mb-4 pb-2 border-b border-white/[0.04] justify-end">
-                  <GraduationCap className="w-6 h-6 text-[#FFD700]" />
-                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+            <div className="grid grid-cols-2 gap-4 sm:gap-20 items-stretch relative">
+              {/* Left Column: Education */}
+              <div className="flex flex-col gap-4 sm:gap-8 text-right pr-2 sm:pr-4 justify-start">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04] justify-end">
+                  <GraduationCap className="w-4 h-4 sm:w-6 sm:h-6 text-[#FFD700]" />
+                  <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
                     Education
                   </h3>
                 </div>
@@ -421,10 +377,10 @@ export default function Timeline() {
               </div>
 
               {/* Right Column: Internships */}
-              <div className="flex flex-col gap-8 pl-4 justify-center">
-                <div className="flex items-center gap-3 mb-4 pb-2 border-b border-white/[0.04]">
-                  <Briefcase className="w-6 h-6 text-[#8B5CF6]" />
-                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+              <div className="flex flex-col gap-4 sm:gap-8 pl-2 sm:pl-4 justify-start">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 pb-2 border-b border-white/[0.04]">
+                  <Briefcase className="w-4 h-4 sm:w-6 sm:h-6 text-[#8B5CF6]" />
+                  <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
                     Internships
                   </h3>
                 </div>
@@ -435,19 +391,19 @@ export default function Timeline() {
             </div>
 
             {/* Part 2: Full-Time Experience (Centered Below) */}
-            <div className="flex flex-col items-center mt-12 relative">
-              <div className="w-full max-w-2xl flex flex-col items-center mb-8">
-                <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
-                <div className="flex items-center gap-3 pb-2 border-b border-white/[0.04] justify-center">
-                  <Briefcase className="w-6 h-6 text-[#00BFFF]" />
-                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+            <div className="flex flex-col items-center mt-6 sm:mt-12 relative">
+              <div className="w-full max-w-2xl flex flex-col items-center mb-6 sm:mb-8">
+                <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6 sm:mb-8" />
+                <div className="flex items-center gap-2 sm:gap-3 pb-2 border-b border-white/[0.04] justify-center">
+                  <Briefcase className="w-4 h-4 sm:w-6 sm:h-6 text-[#00BFFF]" />
+                  <h3 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase">
                     Full-Time Experience
                   </h3>
                 </div>
               </div>
 
               {/* Bizmetric full-time card */}
-              <div className="w-full max-w-2xl relative">
+              <div className="w-full max-w-2xl relative z-10 px-2 sm:px-0">
                 {fullTimeEvents.map((event, idx) => (
                   <TimelineCardFullWidth key={idx} event={event} />
                 ))}
@@ -455,26 +411,6 @@ export default function Timeline() {
             </div>
 
           </div>
-
-          {/* Mobile vertical stacking layout */}
-          <div className="flex flex-col gap-12 lg:hidden relative">
-            {/* Mobile vertical timeline line */}
-            <div className="absolute left-[3px] top-4 bottom-4 w-[2px] z-0">
-              <div className="w-full h-full bg-white/5 rounded-full" />
-              <motion.div
-                style={{ scaleY, transformOrigin: "top" }}
-                className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#00BFFF] via-[#8B5CF6] to-[#00FFFF] rounded-full"
-              />
-            </div>
-
-            <div className="relative pl-8 flex flex-col gap-12 z-10">
-              <MobileTimelineCard event={eduEvents[0]} />
-              <MobileTimelineCard event={internEvents[1]} />
-              <MobileTimelineCard event={internEvents[0]} />
-              <MobileTimelineCard event={fullTimeEvents[0]} />
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
