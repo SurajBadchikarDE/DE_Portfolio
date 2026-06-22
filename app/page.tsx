@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
-import ScrollyCanvas from "@/components/ScrollyCanvas";
 import Navbar from "@/components/Navbar";
 
 // Lazy-load sections below the fold to optimize page speed and memory footprint
@@ -31,8 +30,7 @@ export default function Home() {
       {/* Hero Intro Section (100vh) */}
       <Hero />
 
-      {/* Sticky Canvas & Scroll Storytelling Pipeline (600vh scroll space) */}
-      <ScrollyCanvas />
+
 
       {/* Technical Infrastructure Showcase */}
       <TechStack />

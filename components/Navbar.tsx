@@ -15,21 +15,16 @@ export default function Navbar() {
 
   const links: NavLink[] = [
     { label: "Intro Showcase", href: "#hero-section", number: "01" },
-    { label: "Medallion Pipeline", href: "#pipeline-section", number: "02" },
-    { label: "Technical Skills", href: "#skills-section", number: "03" },
-    { label: "Certifications", href: "#certifications-section", number: "04" },
-    { label: "Career Timeline", href: "#timeline-section", number: "05" },
-    { label: "Bento Projects", href: "#projects-section", number: "06" },
-    { label: "Connect", href: "#contact-section", number: "07" },
+    { label: "Technical Skills", href: "#skills-section", number: "02" },
+    { label: "Certifications", href: "#certifications-section", number: "03" },
+    { label: "Career Timeline", href: "#timeline-section", number: "04" },
+    { label: "Bento Projects", href: "#projects-section", number: "05" },
+    { label: "Connect", href: "#contact-section", number: "06" },
   ];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsOpen(false);
-    
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("bypassScroll", { detail: { targetHref: href } }));
-    }
     
     const targetElement = document.querySelector(href);
     if (targetElement) {
