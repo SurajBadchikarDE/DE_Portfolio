@@ -21,18 +21,18 @@ interface CardProps {
 
 function TimelineCard({ event, side }: CardProps) {
   const isEdu = event.type === "edu";
-  
+
   const badgeColor = isEdu
     ? "bg-[#FFD700]/10 border-[#FFD700]/25 text-[#FFD700]"
     : event.employmentType === "Full-time"
-    ? "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]"
-    : "bg-[#8B5CF6]/10 border-[#8B5CF6]/25 text-[#8B5CF6]";
+      ? "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]"
+      : "bg-[#8B5CF6]/10 border-[#8B5CF6]/25 text-[#8B5CF6]";
 
   const glowShadow = isEdu
     ? "hover:shadow-[0_0_35px_rgba(255,215,0,0.06)] hover:border-[#FFD700]/20"
     : event.employmentType === "Full-time"
-    ? "hover:shadow-[0_0_35px_rgba(0,191,255,0.06)] hover:border-[#00BFFF]/20"
-    : "hover:shadow-[0_0_35px_rgba(139,92,246,0.06)] hover:border-[#8B5CF6]/20";
+      ? "hover:shadow-[0_0_35px_rgba(0,191,255,0.06)] hover:border-[#00BFFF]/20"
+      : "hover:shadow-[0_0_35px_rgba(139,92,246,0.06)] hover:border-[#8B5CF6]/20";
 
   return (
     <motion.div
@@ -43,21 +43,20 @@ function TimelineCard({ event, side }: CardProps) {
       className={`relative w-full ${side === "left" ? "text-right ml-auto" : "text-left mr-auto"}`}
     >
       {/* Central Node (rendered on the divider line) */}
-      <div 
-        className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-white/10 ${
-          side === "left"
-            ? "right-[-8px] sm:right-[-40px]"
-            : "left-[-8px] sm:left-[-40px]"
-        }`}
+      <div
+        className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-white/10 ${side === "left"
+          ? "right-[-8px] sm:right-[-40px]"
+          : "left-[-8px] sm:left-[-40px]"
+          }`}
         style={{
           transform: side === "left" ? "translate(50%, -50%)" : "translate(-50%, -50%)",
         }}
       >
-        <motion.div 
+        <motion.div
           className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full"
           style={{
-            background: isEdu 
-              ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)" 
+            background: isEdu
+              ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)"
               : "radial-gradient(circle, #8B5CF6 0%, #00BFFF 100%)"
           }}
           whileInView={{ scale: [1, 1.2, 1] }}
@@ -113,8 +112,8 @@ function TimelineCard({ event, side }: CardProps) {
         {/* Highlights Bullet List */}
         <div className={`flex flex-col gap-2 sm:gap-3 mb-3 sm:mb-4 ${side === "left" ? "items-end" : "items-start"}`}>
           {event.highlights.map((h, hIdx) => (
-            <div 
-              key={hIdx} 
+            <div
+              key={hIdx}
               className={`flex items-start gap-1.5 sm:gap-3 ${side === "left" ? "flex-row-reverse text-right" : "flex-row text-left"}`}
             >
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#00FFFF] mt-0.5 shrink-0" />
@@ -143,7 +142,7 @@ function TimelineCard({ event, side }: CardProps) {
 
 function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
   const isEdu = event.type === "edu";
-  
+
   const badgeColor = isEdu
     ? "bg-[#FFD700]/10 border-[#FFD700]/25 text-[#FFD700]"
     : "bg-[#00BFFF]/10 border-[#00BFFF]/25 text-[#00BFFF]";
@@ -162,11 +161,11 @@ function TimelineCardFullWidth({ event }: { event: TimelineEvent }) {
     >
       {/* Node centered on top edge of full-width container (on vertical line path) */}
       <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-[#050816] border-2 border-white/10 flex items-center justify-center">
-        <motion.div 
+        <motion.div
           className="w-2 h-2 sm:w-3.5 sm:h-3.5 rounded-full"
           style={{
-            background: isEdu 
-              ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)" 
+            background: isEdu
+              ? "radial-gradient(circle, #FFD700 0%, #B8860B 100%)"
               : "radial-gradient(circle, #00BFFF 0%, #8B5CF6 100%)"
           }}
           whileInView={{ scale: [1, 1.2, 1] }}
@@ -234,7 +233,7 @@ export default function Timeline() {
       if (!element) return;
       const rect = element.getBoundingClientRect();
       const totalRange = element.offsetHeight || 800;
-      
+
       const start = window.innerHeight / 2;
       const distance = start - rect.top;
       const progress = Math.max(0, Math.min(1, distance / totalRange));
@@ -373,7 +372,7 @@ export default function Timeline() {
 
           {/* Symmetrical timeline mapping chronological phases */}
           <div className="flex flex-col gap-8 sm:gap-12 relative">
-            
+
             {/* Phase 1: Undergraduate Education (BCA - Centered at the top) */}
             <div className="flex flex-col items-center mb-6 sm:mb-12 relative">
               <div className="w-full max-w-2xl flex flex-col items-center mb-6">
@@ -401,7 +400,7 @@ export default function Timeline() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 sm:gap-20 items-stretch relative">
                 {/* Left Column: Postgraduate Education (MCA) */}
                 <div className="flex flex-col gap-4 sm:gap-8 text-right pr-2 sm:pr-4 justify-start">

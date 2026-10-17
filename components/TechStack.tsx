@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { 
-  Code2, 
-  Database, 
-  Layers, 
-  Wrench, 
+import {
+  Code2,
+  Database,
+  Layers,
+  Wrench,
   Zap,
   Boxes
 } from "lucide-react";
@@ -22,7 +22,7 @@ const SkillCategory = ({ title, skills, icon: Icon, glowColor }: SkillCategoryPr
     <div className="flex flex-col gap-3.5 w-full select-none py-3.5">
       {/* Title & Icon Header (Left-aligned, inline, no boxes) */}
       <div className="flex items-center gap-3 pb-2.5 border-b border-[#00FFFF]/25">
-        <div 
+        <div
           className="shrink-0 transition-transform duration-300 group-hover:scale-110"
           style={{ color: glowColor }}
         >
@@ -121,7 +121,7 @@ export default function TechStack() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        
+
         {/* Section Header */}
         <div className="flex flex-col gap-4 mb-16 max-w-2xl">
           <div className="flex items-center gap-2">

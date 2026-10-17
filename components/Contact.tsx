@@ -36,7 +36,7 @@ export default function Contact() {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 text-center relative z-10 flex flex-col items-center gap-10">
-        
+
         {/* Header Icon */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
